@@ -1,0 +1,51 @@
+;
+; Coarse-grained BPA-PC model
+;
+; Definition of the beads
+;
+; General system scaling factor:
+; sigma = 4.41 
+; The model uses reduced LJ units, see table 2.4 in gromacs manual
+; Actually, get rid of the scaling, just use normal units to make it simpler.
+
+[ defaults ]
+; non-bond type  combination rule
+; 1 = LJ        2 = specify sigma and epsilon
+;1 2
+; Use table_X_Y.xvg for nonbonded potentials
+1 1
+
+[ atomtypes ]
+
+; This is the 4:1 model, with 3 types of beads: Phenol (P), carbonic
+; acid (C), and isopropane (I).
+
+; The mass of all beads is 73 amu, which is the weighted average of
+; all the beads in a BPA-PC monomer. However, since we use reduced LJ
+; units, the masses are 1.
+
+; The LJ parameters sigma and epsilon are just the shifted and
+; truncated purely repulsive LJ potential, otherwise known as the WCA
+; potential.
+
+; C_sigma = 3.49/sigma = 0.79138321995464855
+; P_sigma = 5.19/sigma = 1.1768707482993197
+; I_sigma = 4.67/sigma = 1.0589569160997732
+
+; In reduced units:
+; name mass charge ptype sigma epsilon
+;P 1.0 0.0 A 1.1768707482993197 1.0
+;C 1.0 0.0 A 0.79138321995464855 1.0
+;I 1.0 0.0 A 1.0589569160997732 1.0
+
+; Normal units:
+
+; C6 term is the WCA potential for excluded volume, save the C12 term
+; for the surface interaction
+
+; name mass charge ptype C6 C12
+P 73.0 0.0 A 1.0 0.0
+C 73.0 0.0 A 1.0 0.0
+I 73.0 0.0 A 1.0 0.0
+
+

@@ -1,0 +1,8 @@
+#include "bpapc.itp"
+#include "bpapc43.itp"
+
+[ system ]
+80 BPA-PC chains with 43 beads each
+
+[ molecules ]
+BPAPC 80

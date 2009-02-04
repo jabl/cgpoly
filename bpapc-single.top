@@ -1,0 +1,9 @@
+; Single BPA-PC chain
+#include "bpapc.itp"
+#include "bpapc43.itp"
+
+[ system ]
+Single BPA-PC chain with 43 beads
+
+[ molecules ]
+BPAPC 1
