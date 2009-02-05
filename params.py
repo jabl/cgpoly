@@ -23,7 +23,8 @@ sigma = 1.
 # Timestep, in Espresso with reduced units 0.001
 time_scaling = rsigma / math.sqrt(kb*temp / 73)
 timestep = 0.001 * time_scaling
-tau_t = 0.5 * time_scaling
+# gamma = 1/tau
+tau_t = 1/(0.5 * time_scaling)
 
 
 # Harmonic bonds, k and b, see section 4.2.1 in gromacs manual

@@ -2,6 +2,8 @@
 integrator               = steep
 nsteps                   = 1500
 
+emstep = 0.2
+
 ; Selection of energy groups
 energygrps               = P C I
 

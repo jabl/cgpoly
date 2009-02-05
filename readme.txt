@@ -117,18 +117,15 @@ grompp -f em.mdp -c bpapc.gro -p bpapc80.top -n index.ndx
 
 mdrun -v -c minimized.gro
 
-Do a second minimization without force capping
+Do a MD run with very soft force capping
 
-./gen_nb_tables.py
+./gen_nb_tables.py -f 1e3
 
-grompp -f em.mdp -c minimized.gro -p bpapc80.top -n index.ndx
+grompp -f md.mdp -c minimized.gro -p bpapc80.top -n index.ndx
 
 mdrun -v -c minimized2.gro
 
-And then the actual md run starting with the optimized coordinates
+Gradually increase the force capping until you can completely remove it
 
-grompp -f md.mdp -c minimized2.gro -p bpapc80.top -n index.ndx
-
-mdrun -v"""
 
 
