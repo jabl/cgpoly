@@ -33,10 +33,3 @@ chain_top.genchain_top(bpc, 'bpapc43.itp')
 # Finally, coordinates
 gen_poly.gen_bpapc('bpapc.gro', bpc, 80, (7,7,7), (True, True, True), dist,
                    avg_angle)
-
-print 'Now create the index file. See readme.txt for details.'
-print """Now run grompp and mdrun. For equilibration, there is
-equil.mdp, for real runs md.mdp. Equilibration runs use force capping
-(soft cores) for nonbonded interactions. E.g.:"""
-print 'grompp -f equil.mdp -c bpapc.gro -p bpapc80.top -n index.ndx'
-print 'And then mdrun -v'
