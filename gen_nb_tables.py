@@ -13,6 +13,7 @@
 from params import *
 import ljpot
 import numpy as np
+import os
 
 def cutoff_sigma(sig):
     "WCA cutoff from sigma"
@@ -72,6 +73,14 @@ def gen_nb_files(forcecap=None):
                 fout.write('%5.4f 0 0 %5g %5g 0 0\n'
                            % (dist, pot[kk], force[kk]))
             fout.close()
+    # Even though pairwise tables are used for all NB interactions, gromacs
+    # complains if it can't find the generic table.xvg used for all others.
+    # So just create a dummy.
+    try:
+        os.symlink('table_P_P.xvg', 'table.xvg')
+    except OSError:
+        # This probably means the symlink exists from before, so do nothing
+        pass
 
 
 if __name__ == '__main__':
