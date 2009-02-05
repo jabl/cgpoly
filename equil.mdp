@@ -68,13 +68,13 @@ ns_type                  = grid
 pbc                      = xyz
 periodic_molecules       = no
 ; nblist cut-off        
-rlist                    = 0.5826
+rlist                    = 0.6
 
 ; OPTIONS FOR ELECTROSTATICS AND VDW
 ; Method for doing electrostatics
 ;coulomb_type             = reaction-field
 rcoulomb_switch          = 0
-rcoulomb                 = 0.5826
+rcoulomb                 = 0.7
 ; Relative dielectric constant for the medium and the reaction field
 epsilon_r                = 0
 ;epsilon_rf               = 0
@@ -82,7 +82,7 @@ epsilon_r                = 0
 vdw_type                 = user
 ; cut-off lengths       
 rvdw_switch              = 0
-rvdw                     = 0.5826
+rvdw                     = 0.6
 ; Apply long range dispersion corrections for Energy and Pressure
 dispcorr                 = enerpres
 ; Extension of the potential lookup tables beyond the cut-off
