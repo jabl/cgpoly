@@ -16,8 +16,9 @@ Quick start
 
 Run the gen_everything.py script to generate all the tables,
 topologies, blahblah and an input file for a BPA-PC system in a 7x7x7
-nm box with 80 chains with 43 beads per chain. After that just run
-grompp and mdrun to start simulating.
+nm box with 80 chains with 43 beads per chain. After that look at the
+end of this file for instruction on how to run grompp and mdrun to
+start simulating.
 
 Parameters of the model
 =======================
@@ -89,3 +90,45 @@ coordinates. Create a group with all phenylenes with "a P*", carbonic
 acid group with "a C*" and isopropylediene group with "a I*", rename
 the groups with "name 2 P" etc. to remove the "*" from the
 names. Finally save and quit.
+
+Mdrun input files
+=================
+
+The file em.mdp contains a mdrun input file for doing initial steepest
+descent minimization, in order to avoid large forces due to the random
+walk generation of the polymer chains. However, as the force and
+potential are still extremely large close to the bead centers, you
+probably need to either use the double precision version of Gromacs,
+or else you get overflows, or use the -f option to gen_nb_tables.py to
+generate NB tables with force capping. A suitable force capping
+parameter for the BPA-PC system with steepest descent might be 1e15.
+
+In the file md.mdp are inputs for actually doing md simulation using
+the Langevin thermostat.
+
+Running the system
+==================
+
+First equilibrate with steepest descent AND force capping:
+
+./gen_nb_tables.py -f 1E15
+
+grompp -f em.mdp -c bpapc.gro -p bpapc80.top -n index.ndx
+
+mdrun -v -c minimized.gro
+
+Do a second minimization without force capping
+
+./gen_nb_tables.py
+
+grompp -f em.mdp -c minimized.gro -p bpapc80.top -n index.ndx
+
+mdrun -v -c minimized2.gro
+
+And then the actual md run starting with the optimized coordinates
+
+grompp -f md.mdp -c minimized2.gro -p bpapc80.top -n index.ndx
+
+mdrun -v"""
+
+
