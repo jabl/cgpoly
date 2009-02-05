@@ -21,7 +21,8 @@ def cutoff_sigma(sig):
 def maxcut():
     "Max cutoff needed for tables"
     cuts = [cutoff_sigma(x) for x in [c_sigma, p_sigma, i_sigma]]
-    return np.ceil(max(cuts) * 10) / 10. + table_extension
+    # Round up to nearest 0.1 nm, add another 0.1 for safety.
+    return np.ceil(max(cuts) * 10) / 10. + table_extension + 0.1
 
 def nb_tables(sigma1, sigma2=None, forcecap=None, dr=0.002):
 

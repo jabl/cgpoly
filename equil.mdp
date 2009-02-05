@@ -74,7 +74,7 @@ rlist                    = 0.6
 ; Method for doing electrostatics
 ;coulomb_type             = reaction-field
 rcoulomb_switch          = 0
-rcoulomb                 = 0.7
+rcoulomb                 = 0.6
 ; Relative dielectric constant for the medium and the reaction field
 epsilon_r                = 0
 ;epsilon_rf               = 0
@@ -84,7 +84,7 @@ vdw_type                 = user
 rvdw_switch              = 0
 rvdw                     = 0.6
 ; Apply long range dispersion corrections for Energy and Pressure
-dispcorr                 = enerpres
+dispcorr                 = no
 ; Extension of the potential lookup tables beyond the cut-off
 table-extension          = 1
 ; Seperate tables between energy group pairs
