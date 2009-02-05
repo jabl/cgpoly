@@ -52,6 +52,7 @@ def lj(r, epsilon=1., sigma=1., shift=0, cutoff=None, forcecap=None):
         pot = np.where(r <= cutoff, pot, 0.)
         force = np.where(r <= cutoff, force, 0.)
     if forcecap != None:
+        pot = np.where(force <= forcecap, pot, r*forcecap)
         force = np.where(force <= forcecap, force, forcecap)
     return pot, force
 
