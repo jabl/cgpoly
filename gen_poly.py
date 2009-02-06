@@ -18,8 +18,10 @@ class ConstraintError(Exception):
 def fold_coords(coords, box, pbc):
     """Fold coordinates into box or throw exception"""
     for ii, bdim in enumerate(box):
-        if (not pbc[ii]) and (coords[ii] < 0. or coords[ii] > bdim):
-            raise ConstraintError("Coordinate outside box!")
+        if not pbc[ii]:
+            if coords[ii] < 0. or coords[ii] > bdim:
+                raise ConstraintError("Coordinate outside box!")
+            continue
         coords[ii] = coords[ii] % bdim
     return coords
 
@@ -42,7 +44,7 @@ def vec_pbc(vec, box, pbc):
     return arr
 
 
-def euler_rot(dr):
+def euler_rot(dr, theta):
     """Create Euler rotation matrix
 
     This transforms the cylindrical coordinate system where z is
@@ -66,9 +68,16 @@ def euler_rot(dr):
     drn = dr/dist
     dro1 = np.cross(drn, np.array((0, 0, 1)))
     dro2 = np.cross(drn, dro1)
+    # The unit vectors in the cylindrical coordinates converted to the rotated
+    # cartesian coordinates
+    ct = np.cos(theta)
+    st = np.sin(theta)
+    uc = np.array(((ct, st, 0),
+                   (-st, ct, 0),
+                   (0, 0, 1))).T
     #cdr = np.array((0., 0., dist))
     #return np.linalg.lstsq(dr.reshape(3,1).T, cdr.reshape(3,1).T)[0]
-    return np.linalg.solve(np.array((dro1, dro2, drn)).T, np.eye(3))
+    return np.linalg.solve(np.array((dro1, dro2, drn)).T, uc)
 
 def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
     """Generate a single linear chain using a randow walk
@@ -104,11 +113,13 @@ def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
         # Second bead, using spherical coordinates
         theta = uniform(0, 2*np.pi)
         phi = uniform(0, np.pi)
-        coords[1, 0] = coords[0, 0] + dist * np.cos(theta) * np.sin(phi)
-        coords[1, 1] = coords[0, 1] + dist * np.sin(theta) * np.sin(phi)
-        coords[1, 2] = coords[0, 2] + dist * np.cos(phi)
+        sinphi = np.sin(phi)
+        coords[1] = coords[0] + dist * np.array((
+            np.cos(theta) * sinphi,
+            np.sin(theta) * sinphi,
+            np.cos(phi)))
         try:
-            coords[1] = fold_coords(coords[1], box, pbc)
+            #coords[1] = fold_coords(coords[1], box, pbc)
             # Rest of the chain
             # Use cylindrical coordinates with z axis along n-1 and n-2 beads
             # Origo at the n-1 bead
@@ -118,11 +129,18 @@ def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
                                cyl_rad * np.sin(theta),
                                cyl_z))
                 dr = coords[ii-1] - coords[ii-2]
-                dr = vec_pbc(dr, box, pbc)
-                A = euler_rot(dr)
-                cc = np.dot(A, cc) + coords[ii-1]
-                coords[ii] = fold_coords(cc, box, pbc)
-                #coords[ii] = cc
+                #dr = vec_pbc(dr, box, pbc)
+                #if np.linalg.norm(dr) > 0.4:
+                    #print np.linalg.norm(dr), np.linalg.norm(drorig)
+                A = euler_rot(dr, theta)
+                cc = np.dot(A, cc)
+                cc = cc / np.linalg.norm(cc) * dist
+                cc += coords[ii-1]
+                #newdist = np.linalg.norm(cc - coords[ii-1])
+                #if (newdist > dist + 0.1):
+                    #print 'Error at bead ', ii, ' dist: ', newdist
+                #coords[ii] = fold_coords(cc, box, pbc)
+                coords[ii] = cc
         except ConstraintError:
             if ntry == maxtry -1:
                 raise ConstraintError("Polymer generation failed, maybe \
