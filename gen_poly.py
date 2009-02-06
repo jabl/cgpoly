@@ -134,13 +134,10 @@ def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
                     #print np.linalg.norm(dr), np.linalg.norm(drorig)
                 A = euler_rot(dr, theta)
                 cc = np.dot(A, cc)
+                # Is this a kludge bugfix, or why doesn't the rotation
+                # matrix preserve the length otherwise?
                 cc = cc / np.linalg.norm(cc) * dist
-                cc += coords[ii-1]
-                #newdist = np.linalg.norm(cc - coords[ii-1])
-                #if (newdist > dist + 0.1):
-                    #print 'Error at bead ', ii, ' dist: ', newdist
-                #coords[ii] = fold_coords(cc, box, pbc)
-                coords[ii] = cc
+                coords[ii] = cc + coords[ii-1]
         except ConstraintError:
             if ntry == maxtry -1:
                 raise ConstraintError("Polymer generation failed, maybe \
