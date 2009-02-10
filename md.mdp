@@ -1,9 +1,16 @@
 ; RUN CONTROL PARAMETERS
-integrator               = sd
+integrator               = md
 ; Start time and timestep in ps
 tinit                    = 0.0
-dt                       = 0.017
-nsteps                   = 100000
+; The Abrams and Hess papers report a coarse-grained timestep of
+; 0.01 tau in reduced units. Time scaling 1 tau = 17 ps calculated
+; according to table 2.4 in Gromacs manual. Note this is not the "real"
+; time scaling calculated by comparing diffusion coefficients
+; However, in Espresso we had to use dt = 0.001 tau, round up => 0.02 ps
+; For equilibrating, need about 0.002 in order to avoid crashing?
+; Test with velocity rescale thermostat
+dt                       = 0.0005
+nsteps                   = 1000000
 
 ; LANGEVIN DYNAMICS OPTIONS
 ; Friction coefficient (amu/ps) and random seed
@@ -43,7 +50,10 @@ tcoupl                   = v-rescale
 ; Groups to couple separately
 tc-grps                  = system
 ; Time constant (ps) and reference temperature (K)
-tau_t                    = 0.12
+; tau_t should be about 30.0 ps in order that gamma = 0.5 in reduced units
+; when using Langevin thermostat
+; For velocity rescaling thermostat, maybe 0.1 ps
+tau_t                    = 0.01
 ref_t                    = 570
 ; Pressure coupling     
 Pcoupl                   = no
@@ -58,7 +68,7 @@ refcoord_scaling         = No
 andersen_seed            = 815131
 
 ; GENERATE VELOCITIES FOR STARTUP RUN
-gen_vel                  = yes
+gen_vel                  = no
 gen_temp                 = 570
 gen_seed                 = 171533
 

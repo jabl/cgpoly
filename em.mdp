@@ -1,6 +1,6 @@
 ; RUN CONTROL PARAMETERS
 integrator               = steep
-nsteps                   = 200
+nsteps                   = 10000
 
 emstep = 0.1
 

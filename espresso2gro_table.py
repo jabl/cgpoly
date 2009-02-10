@@ -20,7 +20,7 @@ def espresso2gro_convert_table(fin, fout, plot=False):
         else:
             angle, force, pot = [float(x) for x in line.split()]
             angle = angle * 180. / math.pi
-            pot /= kb * temp
+            pot *= kb * temp
             pots.append((angle, pot, -force))
 
     # Espresso tables don't contain the 0.0 angle, insert it manually

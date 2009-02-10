@@ -111,21 +111,47 @@ Running the system
 
 First equilibrate with steepest descent AND force capping:
 
-./gen_nb_tables.py -f 1E15
+./gen_nb_tables.py -f 1e15
 
 grompp -f em.mdp -c bpapc.gro -p bpapc80.top -n index.ndx
 
 mdrun -v -c minimized.gro
 
+Then another steepest descent run without force capping:
+
+./gen_nb_tables.py
+
+grompp -f em.mdp -c minimized.gro -p bpapc80.top -n index.ndx
+
+mdrun -v -c minimized2.gro
+
 Do a MD run with very soft force capping
 
 ./gen_nb_tables.py -f 1e3
 
-grompp -f md.mdp -c minimized.gro -p bpapc80.top -n index.ndx
+grompp -f md.mdp -c minimized2.gro -p bpapc80.top -n index.ndx
 
-mdrun -v -c minimized2.gro
+mdrun -v -c md1.gro
 
-Gradually increase the force capping until you can completely remove it
+Remember that after the first MD run you should set gen_vel = no in
+md.mdp.
+
+Increase time step until able to do 0.01 tau ~= 0.2 ps. Must begin
+with 0.002 ps, 2x1e6 steps, then 1e6 steps with dt=0.005
+
+Gradually increase the force capping until you can completely remove
+it.
+
+Using the Velocity Rescale thermostat
+=====================================
+
+See JCP 126, 014101 for details
+
+1. 1e6 steps, dt=0.001 ps, tau_t = 0.1, final md1.gro
+
+2. 1e6 steps, dt = 0.0005 ps, tau_t = 0.01, final md2.gro
+
+
 
 
 
