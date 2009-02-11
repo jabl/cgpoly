@@ -76,7 +76,8 @@ def gen_nb_files(forcecap=None):
     # Even though pairwise tables are used for all NB interactions, gromacs
     # complains if it can't find the generic table.xvg used for all others.
     # So just create a dummy.
-    os.remove('table.xvg')
+    if os.path.exists('table.xvg'):
+        os.remove('table.xvg')
     os.symlink('table_P_P.xvg', 'table.xvg')
 
 
