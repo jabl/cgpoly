@@ -113,7 +113,7 @@ First equilibrate with steepest descent AND force capping:
 
 ./gen_nb_tables.py -f 1e15
 
-grompp -f em.mdp -c bpapc.gro -p bpapc80.top -n index.ndx
+grompp -f em.mdp -p bpapc80.top -n index.ndx -c bpapc.gro
 
 mdrun -v -c minimized.gro
 
@@ -121,7 +121,7 @@ Then another steepest descent run without force capping:
 
 ./gen_nb_tables.py
 
-grompp -f em.mdp -c minimized.gro -p bpapc80.top -n index.ndx
+grompp -f em.mdp -p bpapc80.top -n index.ndx -c minimized.gro
 
 mdrun -v -c minimized2.gro
 
@@ -129,7 +129,7 @@ Do a MD run with very soft force capping
 
 ./gen_nb_tables.py -f 1e3
 
-grompp -f md.mdp -c minimized2.gro -p bpapc80.top -n index.ndx
+grompp -f md.mdp -p bpapc80.top -n index.ndx -c minimized2.gro
 
 mdrun -v -c md1.gro
 
