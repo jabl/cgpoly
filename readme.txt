@@ -172,3 +172,67 @@ Try to reduce drift in conserved energy:
 0.25 fs still too big, back to 0.2 fs then
 
 8. 1e8 steps, dt=0.0002ps, tau_t=0.01, final md8.gro
+
+
+Using Velocity Rescale thermostat and constraints
+=================================================
+
+Set 
+
+constraints              = all-bonds
+
+in the .mdp files. This means bond length potentials will be replaced
+with constraints. This allows to increase the timestep to dt=0.01ps,
+an improvement of 2 orders of magnitude! However, while the system
+does not explode, this timestep is too large as the conserved energy
+drifts and the temperature rises.
+
+- dt=0.001 small enough
+
+- dt=0.005 too big
+
+- dt=0.002 also too big
+
+Runs
+
+1. 1e6, dt=0.001, tau_t = 0.03, final md1.gro
+
+2. 1e5, dt=0.001, tau=0.1, final md2.gro
+
+Remove force capping
+
+3. 1e6, dt=0.001, tau=0.1, final md3.gro
+
+
+System scaling on Louhi
+=======================
+
+Simple benchmark with the v-rescale, constraint system above
+
+
+LINCS limits scaling as lincs_order + 1 bonds need to fit one a single
+node. Default lincs_order = 4, lincs_iter = 1. Reduce lincs_order and
+increase lincs_iter such that (1+lincs_iter)*lincs_order stays the
+same or increases in order to not lose accuracy.
+
+By default then the const value = 8. Possible choices:
+
+lincs_order=3, lincs_iter = 2
+
+lincs_order = 2, lincs_iter = 3
+
+lincs_order = 1, lincs_iter = 7
+
+procs   ns/day   lincs_order  lincs_iter
+-----   ------   -----------  ----------
+1       25.068
+4       72.007
+8       123.441
+16      108.011  3            2
+16      96.010   2            3
+16      78.553   1            7
+32      86.409   3            2
+32      72.007   2            3
+32      66.468   1            7
+64      61.720   3            2
+64      32.003   1            7

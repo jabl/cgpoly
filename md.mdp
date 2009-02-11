@@ -8,8 +8,9 @@ tinit                    = 0.0
 ; time scaling calculated by comparing diffusion coefficients
 ; However, in Espresso we had to use dt = 0.001 tau, round up => 0.02 ps
 ; For equilibrating, need about 0.002 in order to avoid crashing?
-; Test with velocity rescale thermostat
-dt                       = 0.01
+; With velocity rescale thermostat and bonds converted to constraints, need
+; dt=0.001.
+dt                       = 0.001
 nsteps                   = 100000
 
 ; LANGEVIN DYNAMICS OPTIONS
@@ -53,7 +54,7 @@ tc-grps                  = system
 ; tau_t should be about 30.0 ps in order that gamma = 0.5 in reduced units
 ; when using Langevin thermostat
 ; For velocity rescaling thermostat, maybe 0.1 ps
-tau_t                    = 0.5
+tau_t                    = 0.1
 ref_t                    = 570
 ; Pressure coupling     
 Pcoupl                   = no
