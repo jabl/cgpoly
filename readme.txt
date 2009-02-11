@@ -151,7 +151,24 @@ See JCP 126, 014101 for details
 
 2. 1e6 steps, dt = 0.0005 ps, tau_t = 0.01, final md2.gro
 
+Force cap removed, following simulations are with full potentials.
 
+3. 1e6 steps, dt=0.0005 ps, tau_t = 0.01, final md3.gro
 
+Try to reduce drift in conserved energy:
 
+4. 1e5 step, dt=0.0002 ps, tau_t = 0.01, final md4.gro
 
+5. 1e6 steps, dt=0.0004 ps, tau_t = 0.01, final md5.gro
+
+0.0004 too big, try 0.0003
+
+6. 1e6 steps, dt=0.0003ps, tau_t = 0.01, final md6.gro
+
+0.3 fs still slightly too big
+
+7. 1e6 steps, dt=0.00025ps, tau_t=0.01, final md7.gro
+
+0.25 fs still too big, back to 0.2 fs then
+
+8. 1e8 steps, dt=0.0002ps, tau_t=0.01, final md8.gro

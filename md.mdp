@@ -9,8 +9,8 @@ tinit                    = 0.0
 ; However, in Espresso we had to use dt = 0.001 tau, round up => 0.02 ps
 ; For equilibrating, need about 0.002 in order to avoid crashing?
 ; Test with velocity rescale thermostat
-dt                       = 0.0005
-nsteps                   = 1000000
+dt                       = 0.01
+nsteps                   = 100000
 
 ; LANGEVIN DYNAMICS OPTIONS
 ; Friction coefficient (amu/ps) and random seed
@@ -53,7 +53,7 @@ tc-grps                  = system
 ; tau_t should be about 30.0 ps in order that gamma = 0.5 in reduced units
 ; when using Langevin thermostat
 ; For velocity rescaling thermostat, maybe 0.1 ps
-tau_t                    = 0.01
+tau_t                    = 0.5
 ref_t                    = 570
 ; Pressure coupling     
 Pcoupl                   = no
@@ -68,7 +68,22 @@ refcoord_scaling         = No
 andersen_seed            = 815131
 
 ; GENERATE VELOCITIES FOR STARTUP RUN
-gen_vel                  = no
+gen_vel                  = yes
 gen_temp                 = 570
 gen_seed                 = 171533
 
+; OPTIONS FOR BONDS
+constraints              = all-bonds
+lincs_warnangle          = 60
+
+; OUTPUT CONTROL OPTIONS =
+; Output frequency for coords (x), velocities (v) and forces (f) =
+nstxout                  = 5000
+nstvout                  = 5000
+nstfout                  = 5000
+; Output frequency for energies to log file and energy file =
+nstlog                   = 1000
+nstenergy                = 1000
+; Output frequency and precision for xtc file =
+nstxtcout                = 1000
+xtc_precision            = 100

@@ -29,3 +29,19 @@ dispcorr                 = no
 table-extension          = 1
 ; Seperate tables between energy group pairs
 energygrp_table          = P P P C P I C C C I I I 
+
+; OPTIONS FOR BONDS
+constraints              = all-bonds
+lincs_warnangle          = 60
+
+; OUTPUT CONTROL OPTIONS =
+; Output frequency for coords (x), velocities (v) and forces (f) =
+nstxout                  = 5000
+nstvout                  = 5000
+nstfout                  = 5000
+; Output frequency for energies to log file and energy file =
+nstlog                   = 1000
+nstenergy                = 1000
+; Output frequency and precision for xtc file =
+nstxtcout                = 1000
+xtc_precision            = 100
