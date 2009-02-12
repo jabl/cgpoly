@@ -173,6 +173,8 @@ Try to reduce drift in conserved energy:
 
 8. 1e8 steps, dt=0.0002ps, tau_t=0.01, final md8.gro
 
+System performance 18 ns/day w/3 processors => 6 ns/day/cpu
+
 
 Using Velocity Rescale thermostat and constraints
 =================================================
@@ -203,11 +205,13 @@ Remove force capping
 
 3. 1e6, dt=0.001, tau=0.1, final md3.gro
 
+System performance on 1 cpu (2.66 GHz Intel), 28 ns/day.
+
 
 System scaling on Louhi
 =======================
 
-Simple benchmark with the v-rescale, constraint system above
+Simple benchmark with the v-rescale, constraint system above.
 
 
 LINCS limits scaling as lincs_order + 1 bonds need to fit one a single
@@ -236,3 +240,15 @@ procs   ns/day   lincs_order  lincs_iter
 32      66.468   1            7
 64      61.720   3            2
 64      32.003   1            7
+
+
+Scaling of bigger system with 100 chains, 83 beads/chain
+--------------------------------------------------------
+
+procs   ns/day
+-----   ------
+8       50.829
+16      78.553
+32      72.007
+64      72.007
+
