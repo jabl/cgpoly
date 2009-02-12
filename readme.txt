@@ -117,19 +117,11 @@ grompp -f em.mdp -p bpapc80.top -n index.ndx -c bpapc.gro
 
 mdrun -v -c minimized.gro
 
-Then another steepest descent run without force capping:
-
-./gen_nb_tables.py
-
-grompp -f em.mdp -p bpapc80.top -n index.ndx -c minimized.gro
-
-mdrun -v -c minimized2.gro
-
 Do a MD run with very soft force capping
 
 ./gen_nb_tables.py -f 1e3
 
-grompp -f md.mdp -p bpapc80.top -n index.ndx -c minimized2.gro
+grompp -f md.mdp -p bpapc80.top -n index.ndx -c minimized.gro
 
 mdrun -v -c md1.gro
 
@@ -252,3 +244,16 @@ procs   ns/day
 32      72.007
 64      72.007
 
+
+Equilibration of big system 100 chains 83 beads/chain
+=====================================================
+
+1. em, 200 steps, forcecap 1e15 => minimized.gro
+
+2. md, 1e5 steps, forcecap 1e3 => md1.gro
+
+3. md, 1e5 steps, forcecap 1e10 => md2.gro
+
+4. md, 1e5 steps, no forcecap => md3.gro
+
+5. md, 1e7 steps, no fc => md4.gro
