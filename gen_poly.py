@@ -44,40 +44,30 @@ def vec_pbc(vec, box, pbc):
     return arr
 
 
-def euler_rot(dr, theta):
+def euler_rot(dr):
     """Create Euler rotation matrix
 
-    This transforms the cylindrical coordinate system where z is
-    aligned on the bead axis back to the usual cartesian one.
+    This transforms the rotated coordinate system where z is
+    aligned on the bead axis back to the usual one.
 
     See http://mathworld.wolfram.com/EulerAngles.html
 
-    We know that in the cylindrical coordinates the coords of the n-1
-    bead is (0,0, dist), whereas in the system cartesian coordinates
-    they are given by the dr input argument considering the n-2 has
+    We know that in the rotated coordinates the coords of the n-1
+    bead is (0,0,0), whereas in the system cartesian coordinates
+    they are given by the dr input argument considering the n-1 has
     first been transformed to origo. Hence the rotation matrix can be
-    calculated. Since the system is under-determined, and hence the
-    solution is not unique, we use least squares and choose the
-    minimum-norm solution.
+    calculated.
 
     Need to create orthogonal vectors in order to give the rotation
-    matrix capability for arbitrary rotations.
+    matrix capability for arbitrary rotations. Or not necessarily
+    orthogonal, but at least a set of vectors that span the space.
 
     """
     dist = np.linalg.norm(dr)
     drn = dr/dist
     dro1 = np.cross(drn, np.array((0, 0, 1)))
     dro2 = np.cross(drn, dro1)
-    # The unit vectors in the cylindrical coordinates converted to the rotated
-    # cartesian coordinates
-    ct = np.cos(theta)
-    st = np.sin(theta)
-    uc = np.array(((ct, st, 0),
-                   (-st, ct, 0),
-                   (0, 0, 1))).T
-    #cdr = np.array((0., 0., dist))
-    #return np.linalg.lstsq(dr.reshape(3,1).T, cdr.reshape(3,1).T)[0]
-    return np.linalg.solve(np.array((dro1, dro2, drn)).T, uc)
+    return np.linalg.inv(np.array((dro1, dro2, drn)))
 
 def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
     """Generate a single linear chain using a randow walk
@@ -132,7 +122,7 @@ def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
                 #dr = vec_pbc(dr, box, pbc)
                 #if np.linalg.norm(dr) > 0.4:
                     #print np.linalg.norm(dr), np.linalg.norm(drorig)
-                A = euler_rot(dr, theta)
+                A = euler_rot(dr)
                 cc = np.dot(A, cc)
                 # Is this a kludge bugfix, or why doesn't the rotation
                 # matrix preserve the length otherwise?
