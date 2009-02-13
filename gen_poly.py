@@ -141,6 +141,50 @@ def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
         break
     return coords
 
+def gen_index(mbeads, bpc, nchains):
+    """Generate index files for angles
+
+    First generate angles from monomer descriptor. E.g.
+    [P,C,P,I] => [PCP, CPI, PIP, IPC]
+    Remove duplicates => [PCP, PIP, IPC]
+    Generate files => [PCP-angles.ndx, PIP-angles.ndx, IPC-angles.ndx]
+
+    """
+    angles = []
+    mbl = len(mbeads)
+    for ii, bead in enumerate(mbeads):
+        jj = (ii + 1) % mbl
+        kk = (ii + 2) % mbl
+        angles.append([bead + mbeads[jj] + mbeads[kk], ii])
+
+    # Remove duplicates by checking if reversing them matches another
+    # angle (insert fancy symmetry group name here to make the
+    # crystallography weenies happy)
+    ra = []
+    for ii, ang in enumerate(angles):
+        as = ang[0]
+        angs = [a[0] for a in angles[(ii+1):]]
+        for jj, ang2 in enumerate(angs):
+            if as[::-1] == ang2:
+                ra.append((ang, jj + ii))
+    for a in ra:
+        angles[a[1] + 1].append(a[1])
+        angles.remove(a[0])
+
+    # Generate files
+    for ang in angles:
+        f = open(ang[0] + '-angles.ndx', 'w')
+        f.write('[ %s ]\n' % ang[0])
+        aind = ang[1:]
+        aind.sort()
+        for chain in range(nchains):
+            for bead in range(bpc-2):
+                for a in aind:
+                    if bead % mbl == a:
+                        bn = bpc*chain + bead 
+                        f.write('%i %i %i\n' % (bn+1, bn+2, bn+3))
+
+
 def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle):
     """Write out coordinate file for BPA-PC system.
 
@@ -166,6 +210,8 @@ def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle):
                        bead[0], bead[1], bead[2], 0.0, 0.0, 0.0))
     f.write('%8.4f %8.4f %8.4f\n' % box)
     f.close()
+    # Finally generate index files for g_angle
+    gen_index(['P', 'C', 'P', 'I'], bpc, nchains)
 
 if __name__ == '__main__':
     from optparse import OptionParser
