@@ -168,7 +168,7 @@ def gen_index(mbeads, bpc, nchains):
             if as[::-1] == ang2:
                 ra.append((ang, jj + ii))
     for a in ra:
-        angles[a[1] + 1].append(a[1])
+        angles[a[1] + 1].append(a[1]-1)
         angles.remove(a[0])
 
     # Generate files
