@@ -44,11 +44,16 @@ def vec_pbc(vec, box, pbc):
     return arr
 
 
-def euler_rot(dr):
-    """Create Euler rotation matrix
+def euler_rot(dr, cc):
+    """Create Euler rotation matrix and rotate vector
 
     This transforms the rotated coordinate system where z is
     aligned on the bead axis back to the usual one.
+
+    dr -- vector that defines the z axis in the rotated coord system
+    cc -- Vector in the rotated coord. system to transform
+
+    Returns the vector cc rotated to the usual xyz coord system.
 
     See http://mathworld.wolfram.com/EulerAngles.html
 
@@ -63,11 +68,9 @@ def euler_rot(dr):
     orthogonal, but at least a set of vectors that span the space.
 
     """
-    dist = np.linalg.norm(dr)
-    drn = dr/dist
-    dro1 = np.cross(drn, np.array((0, 0, 1)))
-    dro2 = np.cross(drn, dro1)
-    return np.linalg.inv(np.array((dro1, dro2, drn)))
+    dro1 = np.cross(dr, np.array((0, 0, 1)))
+    dro2 = np.cross(dr, dro1)
+    return np.linalg.solve(np.array((dro1, dro2, dr)), cc)
 
 def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
     """Generate a single linear chain using a randow walk
@@ -118,12 +121,13 @@ def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
                 cc = np.array((cyl_rad * np.cos(theta),
                                cyl_rad * np.sin(theta),
                                cyl_z))
-                dr = coords[ii-1] - coords[ii-2]
+                dr = (coords[ii-1] - coords[ii-2]) / dist
                 #dr = vec_pbc(dr, box, pbc)
                 #if np.linalg.norm(dr) > 0.4:
                     #print np.linalg.norm(dr), np.linalg.norm(drorig)
-                A = euler_rot(dr)
-                cc = np.dot(A, cc)
+                #A = euler_rot(dr)
+                #cc = np.dot(A, cc)
+                cc = euler_rot(dr, cc)
                 # Is this a kludge bugfix, or why doesn't the rotation
                 # matrix preserve the length otherwise?
                 cc = cc / np.linalg.norm(cc) * dist
