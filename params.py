@@ -1,4 +1,5 @@
 # -*- coding: latin-1 -*-
+# Copyright (C) 2009 Janne Blomqvist
 # Parameters of the coarse-grained BPA-PC model
 
 import math

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: latin-1 -*-
 
-# Copyright Janne Blomqvist (C) 2009
+# Copyright (C) 2009 Janne Blomqvist
 
 # This file contains the parameters for the bonded interactions in the
 # coarse-grained BPA-PC model, and is used to generate a GROMACS

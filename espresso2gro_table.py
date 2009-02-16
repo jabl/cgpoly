@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Copyright Janne Blomqvist (C) 2009
+# Copyright (C) 2009 Janne Blomqvist
 
 # Convert angle potential table from Espresso format to Gromacs.
 

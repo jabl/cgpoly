@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Copyright (C) Janne Blomqvist 2009
+# Copyright (C) 2009 Janne Blomqvist
 
 # Generate tables with the nonbonded interactions for the
 # coarse-grained BPA-PC model

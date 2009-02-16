@@ -121,22 +121,19 @@ def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
                 cc = np.array((cyl_rad * np.cos(theta),
                                cyl_rad * np.sin(theta),
                                cyl_z))
+                # dr argument to euler_rot must be length 1
                 dr = (coords[ii-1] - coords[ii-2]) / dist
-                #dr = vec_pbc(dr, box, pbc)
-                #if np.linalg.norm(dr) > 0.4:
-                    #print np.linalg.norm(dr), np.linalg.norm(drorig)
-                #A = euler_rot(dr)
-                #cc = np.dot(A, cc)
                 cc = euler_rot(dr, cc)
                 # Is this a kludge bugfix, or why doesn't the rotation
                 # matrix preserve the length otherwise?
                 cc = cc / np.linalg.norm(cc) * dist
                 coords[ii] = cc + coords[ii-1]
+                # Add checking for constraint errors, going out of the
+                # box if not pbc=xyz etc. here.
         except ConstraintError:
             if ntry == maxtry -1:
                 raise ConstraintError("Polymer generation failed, maybe \
                 try increasing maxtry or box size?")
-            #print 'Failed at try ', ntry, ' trying again'
             continue # Restart polymer generation
         break
     return coords
@@ -218,7 +215,10 @@ if __name__ == '__main__':
     from params import *
     usage = """%prog [options] outfile
 
-Generate BPA-PC polymer coordinates, storing them into the outfile in GRO format."""
+Generate BPA-PC polymer coordinates, storing them into the outfile in
+GRO format. Also generates index files for the angles PCP-angles.ndx,
+PIP-angles.ndx, IPC-angles.ndx that can be used with g_angle."""
+    
     parser = OptionParser(usage)
     parser.add_option('-b', '--beads-per-chain', dest='bpc', help='Number of beads per chain')
     parser.add_option('-n', '--num-chains', dest='nchains', help='Number of chains')
