@@ -258,4 +258,8 @@ Equilibration of big system 100 chains 83 beads/chain
 
 5. md, 1e7 steps, no fc => md4.gro
 
+6. md, 1e7 steps, no fc => md5.gro
+
+7. md, 1e8 steps, no fc => md6.gro
+
 about 36 ns/day on 4 cpu:s
