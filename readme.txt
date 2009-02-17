@@ -91,6 +91,9 @@ acid group with "a C*" and isopropylediene group with "a I*", rename
 the groups with "name 2 P" etc. to remove the "*" from the
 names. Finally save and quit.
 
+For the angle index files, gen_poly.py generates these. You can also
+use the mk_angndx tool from gromacs.
+
 Mdrun input files
 =================
 
