@@ -2,6 +2,9 @@
 # Copyright (C) 2009 Janne Blomqvist
 # Parameters of the coarse-grained BPA-PC model
 
+# See
+# Abrams, Macromolecules 36, 260-267 (2003)
+
 import math
 
 # Remember, Espresso uses Å, Gromacs uses nm!
@@ -44,9 +47,11 @@ ipc_theta = 180.0
 ipc_k = 0.1 * kb * temp * (180. / math.pi)**2
 
 # Non-bonded parameters
+# Note the value of c_sigma in Abrams MM 36 260 is incorrect, this is the
+# correct value!
 c_sigma = 0.349 / sigma
-p_sigma = 0.519 / sigma
-i_sigma = 0.467 / sigma
+p_sigma = 0.467 / sigma
+i_sigma = 0.519 / sigma
 
 # Some technical stuff
 

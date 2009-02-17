@@ -22,7 +22,8 @@ dist = (cp_r + ip_r) / 2
 exp_pcp = e2g.espresso2gro_convert_table('PCP_TABLE.DAT', 'table_a0.xvg')
 exp_pip = e2g.espresso2gro_convert_table('PIP_TABLE.DAT', 'table_a1.xvg')
 
-avg_angle = (exp_pcp + exp_pip + 2*180.)/4
+# Average IPC angle is 175.7 deg (obviously can't never be 180)
+avg_angle = (exp_pcp + exp_pip + 2*175.731)/4
 
 # Table files with non-bonded interactions (WCA potentials)
 gen_nb_tables.gen_nb_files()
