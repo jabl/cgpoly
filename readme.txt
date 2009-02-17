@@ -266,3 +266,17 @@ Equilibration of big system 100 chains 83 beads/chain
 7. md, 1e8 steps, no fc => md6.gro
 
 about 36 ns/day on 4 cpu:s
+
+
+Analysis of big system
+======================
+
+$ g_polystat -n index.ndx -b 20000 -dt 10000
+
+Average end to end distance: 6.238 (nm)
+
+Average radius of gyration:  2.545 (nm)
+
+Hess et al article: Rg = 2.74 nm, Re = 6.80
+
+$ g_msd -f traj.xtc -n index.ndx
