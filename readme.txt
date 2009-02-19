@@ -267,6 +267,10 @@ Equilibration of big system 100 chains 83 beads/chain
 
 about 36 ns/day on 4 cpu:s
 
+FIX switch p_sigma and i_sigma (DUH!)
+
+8. md, 1e8 steps, no fc => md7.gro
+
 
 Analysis of big system
 ======================
@@ -280,3 +284,11 @@ Average radius of gyration:  2.545 (nm)
 Hess et al article: Rg = 2.74 nm, Re = 6.80
 
 $ g_msd -f traj.xtc -n index.ndx
+
+# MSD gathered over 100000 ps with 10001 restarts
+# Diffusion constants fitted from time 10000 to 90000 ps
+# D[     BPAPC] = 0.0238 (+/- 0.0084) (1e-5 cm^2/s)
+
+FIX switch p_sigma and i_sigma here
+
+$ redo analysis after next run...

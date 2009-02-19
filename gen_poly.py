@@ -240,5 +240,8 @@ PIP-angles.ndx, IPC-angles.ndx that can be used with g_angle."""
     dist = (cp_r + ip_r) / 2
     # Average angle
     # angles in monomer: PCP, IPC, PIP, IPC
-    angle = 145.61693134825001
+    # 151 is the correct angle, but 141 produces approx correct radius of
+    # gyration
+    # angle = 151.0
+    angle = 141
     gen_bpapc(args[0], bpc, nchains, box, (True, True, True), dist, angle)
