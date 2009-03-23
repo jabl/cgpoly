@@ -66,7 +66,7 @@ gromacs molecule definition.
 
 Run it with
 
-./chain_top.py 43 > bpapc43.itp
+./chain_top.py -b 43 bpapc43.itp
 
 to create a molecule topology for a chain of 43 beads
 
@@ -265,6 +265,10 @@ Equilibration of big system 100 chains 83 beads/chain
 
 7. md, 1e8 steps, no fc => md6.gro
 
+8. md, 1e8 steps, no fc => md7.gro
+
+9. md, 1e7 steps, no fc, dt=0.001, tau=0.05 => md8.gro
+
 about 36 ns/day on 4 cpu:s
 
 
@@ -280,3 +284,21 @@ Average radius of gyration:  2.545 (nm)
 Hess et al article: Rg = 2.74 nm, Re = 6.80
 
 $ g_msd -f traj.xtc -n index.ndx
+
+
+Using gromacs to analyse Espresso data
+======================================
+
+Create index file and corresponding topology, then convert Espresso
+.pdb files to gromacs with
+
+echo 1|g_trjconv -box  15.9365 15.9365 31.873 -n index.ndx -s topol.tpr -f pc-realwall5-100000000.pdb -o pc100e6.gro
+
+Need to put correct box size, since espresso doesn't put box size into
+.pdb file. Also, length units will be messed up, both due to LJ units
+and Espresso using Å rather than nm.
+
+Concatenate a bunch of trajectories with
+
+g_trjcat -f pc1* pc2* pc3* pc4* pc5* pc6* pc7* pc8* pc9* -o pctraj.xtc -cat
+
