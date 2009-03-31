@@ -223,6 +223,7 @@ PIP-angles.ndx, IPC-angles.ndx that can be used with g_angle."""
     parser.add_option('-b', '--beads-per-chain', dest='bpc', help='Number of beads per chain')
     parser.add_option('-n', '--num-chains', dest='nchains', help='Number of chains')
     parser.add_option('-s', '--size', dest='size', help='Size of simulation cube side')
+    parser.add_option('-a', '--angle', dest='angle', help='Angle between beads')
     (options, args) = parser.parse_args()
     if options.bpc:
         bpc = int(options.bpc)
@@ -240,5 +241,8 @@ PIP-angles.ndx, IPC-angles.ndx that can be used with g_angle."""
     dist = (cp_r + ip_r) / 2
     # Average angle
     # angles in monomer: PCP, IPC, PIP, IPC
-    angle = 145.61693134825001
+    if options.angle:
+        angle = float(options.angle)
+    else:
+        angle = 145.61693134825001
     gen_bpapc(args[0], bpc, nchains, box, (True, True, True), dist, angle)
