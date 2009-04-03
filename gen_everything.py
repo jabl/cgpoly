@@ -22,11 +22,12 @@ dist = (cp_r + ip_r) / 2
 exp_pcp = e2g.espresso2gro_convert_table('PCP_TABLE.DAT', 'table_a0.xvg')
 exp_pip = e2g.espresso2gro_convert_table('PIP_TABLE.DAT', 'table_a1.xvg')
 
-# Average IPC angle is 175.7 deg (obviously can't never be 180)
+# Average IPC angle is 175.7 deg taken from an equilibrated simulation
+# (obviously can't never be 180)
 #avg_angle = (exp_pcp + exp_pip + 2*175.731)/4
-
-# Tested to generage correct end-to-end distance:
-avg_angle = 145.61693134825001
+# However, this angle produces a too large radius of gyration, so just
+# use one that has been determined to produce the correct one
+avg_angle = 141
 
 # Table files with non-bonded interactions (WCA potentials)
 gen_nb_tables.gen_nb_files()
