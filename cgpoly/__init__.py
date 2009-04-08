@@ -1,2 +1,1 @@
-__all__ = ['topology', 'espresso2gro_table', 'nonbonded', 'polymer',
-           'ljpot', 'params']
+__all__ = ['topology', 'nonbonded', 'polymer', 'ljpot', 'params']
