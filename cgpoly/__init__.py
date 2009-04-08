@@ -1,2 +1,2 @@
-__all__ = ['chain_top', 'espresso2gro_table', 'gen_nb_tables', 'gen_poly',
+__all__ = ['topology', 'espresso2gro_table', 'nonbonded', 'polymer',
            'ljpot', 'params']
