@@ -2,27 +2,54 @@
 
 # Copyright (C) 2009 Janne Blomqvist
 
-# Generate everything needed for a coarse-grained BPA-PC system
-# with 80 chains and 43 beads per chain in a 7x7x7 nm box
+#  This file is part of cgpoly.
 
-import cgpoly.espresso2gro_table as e2g
-import cgpoly.gen_nb_tables
-import cgpoly.chain_top
-import cgpoly.gen_poly
+#  cgpoly is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 3 of the License, or
+#  (at your option) any later version.
+
+#  cgpoly is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+#  You should have received a copy of the GNU General Public License
+#  along with cgpoly.  If not, see <http://www.gnu.org/licenses/>.
+
+# Generate everything needed for a coarse-grained BPA-PC system
+# with, by default 80 chains and 43 beads per chain in a 7x7x7 nm box
+
+import cgpoly
 from cgpoly.params import *
 from optparse import OptionParser
 
 usage = """%prog [options] outfile
 
-Generate BPA-PC polymer coordinates, storing them into the outfile in
-GRO format. Also generates index files for the angles PCP-angles.ndx,
-PIP-angles.ndx, IPC-angles.ndx that can be used with g_angle."""
+Setups a coarse grained BPA-PC system for GROMACS
+
+This program will generate
+
+- BPA-PC polymer coordinates, storing them into the outfile in
+GRO format.
+
+- Index files for the angles PCP-angles.ndx,
+PIP-angles.ndx, IPC-angles.ndx that can be used with g_angle.
+
+- Converts espresso format angle potential tables to GROMACS format.
+
+- Topology for bonded interaction
+
+- Tables for nonbonded interactions."""
 
 parser = OptionParser(usage)
+
 parser.add_option('-b', '--beads-per-chain', dest='bpc', help='Number of beads per chain')
 parser.add_option('-n', '--num-chains', dest='nchains', help='Number of chains')
 parser.add_option('-s', '--size', dest='size', help='Size of simulation cube side')
 parser.add_option('-a', '--angle', dest='angle', help='Angle between beads')
+parser.add_option('-f', '--forcecap', dest='fcap', help='Cap maximum force at this value')
+
 (options, args) = parser.parse_args()
 if options.bpc:
     bpc = int(options.bpc)
@@ -37,14 +64,18 @@ if options.size:
     box = (s, s, s)
 else:
     box = (7, 7, 7)
+if options.fcap:
+    fcap = float(options.fcap)
+else:
+    fcap = None
 
 # Average bead-bead distance
 dist = (cp_r + ip_r) / 2
 
 # Convert Espresso format tables for bonded angle potentials to
 # Gromacs format
-exp_pcp = e2g.espresso2gro_convert_table('PCP_TABLE.DAT', 'table_a0.xvg')
-exp_pip = e2g.espresso2gro_convert_table('PIP_TABLE.DAT', 'table_a1.xvg')
+exp_pcp = cgpoly.topology.espresso2gro_convert_table('PCP_TABLE.DAT', 'table_a0.xvg')
+exp_pip = cgpoly.topology.espresso2gro_convert_table('PIP_TABLE.DAT', 'table_a1.xvg')
 
 
 # Average angle
@@ -60,11 +91,12 @@ else:
     angle = 141
 
 # Generate coordinates
-gen_bpapc(args[0], bpc, nchains, box, (True, True, True), dist, angle)
+cgpoly.polymer.gen_bpapc(args[0], bpc, nchains, box, (True, True, True), dist, angle)
 
 
 # Table files with non-bonded interactions (WCA potentials)
-gen_nb_tables.gen_nb_files()
+cgpoly.nonbonded.gen_nb_files(fcap)
 
 # Chain topology and bonded interactions
-chain_top.genchain_top(bpc, 'bpapc43.itp')
+topfile = 'bpapc' + str(bpc) + '.itp'
+cgpoly.topology.genchain_top(bpc, topfile)
