@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cgpoly.  If not, see <http://www.gnu.org/licenses/>.
 
-# Different variants of LJ potentials
+"""Different variants of LJ potentials"""
 
 from params import *
 import numpy as np

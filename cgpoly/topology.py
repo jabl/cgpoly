@@ -19,9 +19,9 @@
 #  along with cgpoly.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# This file contains the stuff to generate a GROMACS topology file for
-# a single chain, as well as to convert an Espresso angle potential
-# file to GROMACS format.
+"""This module contains the stuff to generate a GROMACS topology file
+for a single chain, as well as to convert an Espresso angle potential
+file to GROMACS format."""
 
 import time, math
 from params import *
