@@ -229,7 +229,7 @@ def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle):
 
 if __name__ == '__main__':
     from optparse import OptionParser
-    from params import *
+
     usage = """%prog [options] outfile
 
 Generate BPA-PC polymer coordinates, storing them into the outfile in

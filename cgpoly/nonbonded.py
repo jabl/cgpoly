@@ -26,75 +26,83 @@ types. This can be done with the energygrp_table option in the .mdp
 file. See the thread at
 http://www.mail-archive.com/gmx-users@gromacs.org/msg07992.html"""
 
-from params import *
 import ljpot
 import numpy as np
 import os
+import cgpoly.params as cp
 
 def cutoff_sigma(sig):
     "WCA cutoff from sigma"
     return sig * 2**(1./6)
 
-def maxcut():
-    "Max cutoff needed for tables"
-    cuts = [cutoff_sigma(x) for x in [c_sigma, p_sigma, i_sigma]]
-    # Round up to nearest 0.1 nm, add another 0.1 for safety.
-    return np.ceil(max(cuts) * 10) / 10. + table_extension + 0.1
 
-def nb_tables(sigma1, sigma2=None, forcecap=None, dr=0.002):
+class NonBonded(cp.CGConfig):
+    """Functionality for creating tables for nonbonded interactions"""
 
-    """Create tables with pot and force
+    def __init__(self, conf):
+        """Initialize nonbonded table creator"""
+        super(NonBonded, self).__init__(conf)
+        
+    def maxcut(self):
+        "Max cutoff needed for tables"
+        cuts = [cutoff_sigma(x) for x in self.sigmas]
+        # Round up to nearest 0.1 nm, add another 0.1 for safety.
+        return np.ceil(max(cuts) * 10) / 10. + self.table_extension + 0.1
 
-    The table goes from 0 to cutoff in dr intervals. cutoff is
-    determined by sigma. The nonbonded interactions in reduced units
-    are according to eq. 5.1 in the Espresso manual with params
+    def nb_tables(self, sigma1, sigma2=None, forcecap=None, dr=0.002):
 
-    eps = 1
-    sigma = reduced per-atomtype sigma
-    cutoff = sigma * 2**(1./6) (should be sigma**(1./6) for WCA?)
-    shift = 1./4
-    offset = 0
+        """Create tables with pot and force
 
-    """
-    if sigma2 == None:
-        sigma2 = sigma1
-    sig = (sigma1 + sigma2) / 2
-    eps = kb * temp
-    cutoff = cutoff_sigma(sig)
-    mc = maxcut()
-    rr = np.linspace(0, mc, mc/dr)
-    pot = np.empty(rr.shape)
-    force = pot.copy()
-    pot[1:], force[1:] = ljpot.lj(rr[1:], eps, sig, 1./4, cutoff, forcecap)
-    pot[0] = pot[1]
-    force[0] = force[1]
-    return rr, pot, force
+        The table goes from 0 to cutoff in dr intervals. cutoff is
+        determined by sigma. The nonbonded interactions in reduced units
+        are according to eq. 5.1 in the Espresso manual with params
 
-def gen_nb_files(forcecap=None):
-    """Generate Gromacs nb tables
+        eps = 1
+        sigma = reduced per-atomtype sigma
+        cutoff = sigma * 2**(1./6) (should be sigma**(1./6) for WCA?)
+        shift = 1./4
+        offset = 0
+        
+        """
+        if sigma2 == None:
+            sigma2 = sigma1
+        sig = (sigma1 + sigma2) / 2
+        eps = self.kbt
+        cutoff = cutoff_sigma(sig)
+        mc = self.maxcut()
+        rr = np.linspace(0, mc, mc/dr)
+        pot = np.empty(rr.shape)
+        force = pot.copy()
+        pot[1:], force[1:] = ljpot.lj(rr[1:], eps, sig, 1./4, cutoff, forcecap)
+        pot[0] = pot[1]
+        force[0] = force[1]
+        return rr, pot, force
 
-    The actual data will be as g and g', that is columns 4 and 5. In
-    the topology the C6 factor, which should be 1.0, will be
-    multiplied with the value taken from the table.
-
-    """
-    beads = ['P', 'C', 'I']
-    sigmas = [p_sigma, c_sigma, i_sigma]
-    for ii, b1 in enumerate(beads):
-        for jj, b2 in enumerate(beads[ii:]):
-            rr, pot, force = nb_tables(sigmas[ii], sigmas[jj], forcecap)
-            fn = 'table_' + b1 + '_' + b2 + '.xvg'
-            fout = open(fn, 'w')
-            for kk, dist in enumerate(rr):
-                fout.write('%5.4f 0 0 %5g %5g 0 0\n'
-                           % (dist, pot[kk], force[kk]))
-            fout.close()
-    # Even though pairwise tables are used for all NB interactions, gromacs
-    # complains if it can't find the generic table.xvg used for all others.
-    # So just create a dummy.
-    if os.path.exists('table.xvg'):
-        os.remove('table.xvg')
-    os.symlink('table_P_P.xvg', 'table.xvg')
+    def gen_nb_files(self, forcecap=None):
+        """Generate Gromacs nb tables
+        
+        The actual data will be as g and g', that is columns 4 and 5. In
+        the topology the C6 factor, which should be 1.0, will be
+        multiplied with the value taken from the table.
+        
+        """
+        beads = ['P', 'C', 'I']
+        sigmas = self.sigmas
+        for ii, b1 in enumerate(beads):
+            for jj, b2 in enumerate(beads[ii:]):
+                rr, pot, force = self.nb_tables(sigmas[ii], sigmas[jj], forcecap)
+                fn = 'table_' + b1 + '_' + b2 + '.xvg'
+                fout = open(fn, 'w')
+                for kk, dist in enumerate(rr):
+                    fout.write('%5.4f 0 0 %5g %5g 0 0\n'
+                               % (dist, pot[kk], force[kk]))
+                fout.close()
+        # Even though pairwise tables are used for all NB interactions, gromacs
+        # complains if it can't find the generic table.xvg used for all others.
+        # So just create a dummy.
+        if os.path.exists('table.xvg'):
+            os.remove('table.xvg')
+        os.symlink('table_P_P.xvg', 'table.xvg')
 
 
 if __name__ == '__main__':

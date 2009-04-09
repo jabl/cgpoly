@@ -21,7 +21,6 @@
 # with, by default 80 chains and 43 beads per chain in a 7x7x7 nm box
 
 import cgpoly
-from cgpoly.params import *
 from optparse import OptionParser
 
 usage = """%prog [options] outfile
@@ -49,6 +48,7 @@ parser.add_option('-n', '--num-chains', dest='nchains', help='Number of chains')
 parser.add_option('-s', '--size', dest='size', help='Size of simulation cube side')
 parser.add_option('-a', '--angle', dest='angle', help='Angle between beads')
 parser.add_option('-f', '--forcecap', dest='fcap', help='Cap maximum force at this value')
+parser.add_option('-c', '--config', dest='conf', help='Config file with parameters, default cgparams.py in current directory')
 
 (options, args) = parser.parse_args()
 if options.bpc:
@@ -68,15 +68,25 @@ if options.fcap:
     fcap = float(options.fcap)
 else:
     fcap = None
+if options.conf:
+    conf_file = options.conf
+else:
+    conf_file = None
+
+conf = cgpoly.params.CGConfig(conf_file)
 
 # Average bead-bead distance
-dist = (cp_r + ip_r) / 2
+dist = conf.avg_r
 
 # Convert Espresso format tables for bonded angle potentials to
 # Gromacs format
-exp_pcp = cgpoly.topology.espresso2gro_convert_table('PCP_TABLE.DAT', 'table_a0.xvg')
-exp_pip = cgpoly.topology.espresso2gro_convert_table('PIP_TABLE.DAT', 'table_a1.xvg')
+top = cgpoly.topology.TopologyGenerator(conf.c)
+exp_pcp = top.espresso2gro_convert_table('PCP_TABLE.DAT', 'table_a0.xvg')
+exp_pip = top.espresso2gro_convert_table('PIP_TABLE.DAT', 'table_a1.xvg')
 
+# Chain topology and bonded interactions
+topfile = 'bpapc' + str(bpc) + '.itp'
+top.genchain_top(bpc, topfile)
 
 # Average angle
 # angles in monomer: PCP, IPC, PIP, IPC
@@ -95,8 +105,7 @@ cgpoly.polymer.gen_bpapc(args[0], bpc, nchains, box, (True, True, True), dist, a
 
 
 # Table files with non-bonded interactions (WCA potentials)
-cgpoly.nonbonded.gen_nb_files(fcap)
+nb = cgpoly.nonbonded.NonBonded(conf.c)
+nb.gen_nb_files(fcap)
 
-# Chain topology and bonded interactions
-topfile = 'bpapc' + str(bpc) + '.itp'
-cgpoly.topology.genchain_top(bpc, topfile)
+

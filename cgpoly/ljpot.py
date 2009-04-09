@@ -20,7 +20,6 @@
 
 """Different variants of LJ potentials"""
 
-from params import *
 import numpy as np
 
 def ljwall_scalar(r, epsilon, sigma, cutoff, shift, offset):
