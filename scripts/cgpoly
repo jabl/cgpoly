@@ -49,6 +49,8 @@ parser.add_option('-s', '--size', dest='size', help='Size of simulation cube sid
 parser.add_option('-a', '--angle', dest='angle', help='Angle between beads')
 parser.add_option('-f', '--forcecap', dest='fcap', help='Cap maximum force at this value')
 parser.add_option('-c', '--config', dest='conf', help='Config file with parameters, default cgparams.py in current directory')
+parser.add_option('-w', '--wall', dest='wall', help='Place a  wall at z=0', action='store_true')
+
 
 (options, args) = parser.parse_args()
 if options.bpc:
@@ -72,6 +74,12 @@ if options.conf:
     conf_file = options.conf
 else:
     conf_file = None
+
+if options.wall:
+    constr = [cgpoly.polymer.WallConstraint(0),
+              cgpoly.polymer.WallConstraint(box[2])]
+else:
+    constr = []
 
 conf = cgpoly.params.CGConfig(conf_file)
 
@@ -101,7 +109,8 @@ else:
     angle = 141
 
 # Generate coordinates
-cgpoly.polymer.gen_bpapc(args[0], bpc, nchains, box, (True, True, True), dist, angle)
+cgpoly.polymer.gen_bpapc(args[0], bpc, nchains, box, (True, True, True),
+                         dist, angle, constr)
 
 
 # Table files with non-bonded interactions (WCA potentials)

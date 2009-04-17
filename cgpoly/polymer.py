@@ -31,6 +31,67 @@ class ConstraintError(Exception):
     def __str__(self):
         return repr(self.value)
 
+class Plane(object):
+    """Class for representing a plane in 3D space.
+
+    This class is copied from the vasputil.geometry module.
+
+    """
+
+    def __init__(self, points, normal=None):
+        """Initialize plane.
+
+        Arguments:
+        points: points in the plane.
+        normal: Normal vector of the plane.
+
+        If normal is not provided, points must be a sequence or Numpy ndarray
+        providing coordinates of 3 points in the plane. If coordinates are
+        provided as a Numpy ndarray, each coordinate must be a row vector. If
+        normal is provided, a single point is sufficient.
+
+        """
+        if normal == None:
+            if isinstance(points, np.ndarray) and points.shape != (3,3):
+                raise TypeError("Shape of points array must be (3,3).")
+            elif len(points) != 3:
+                raise TypeError("Points sequence must have 3 elemnents.")
+            v1 = points[1] - points[0]
+            v2 = points[2] - points[1]
+            self.normal = np.cross(v1, v2)
+            self.normal /= np.linalg.norm(self.normal)
+            self.d_origo = np.dot(self.normal, points[1])
+        else:
+            self.normal = normal / np.linalg.norm(normal)
+            self.d_origo = np.dot(self.normal, points)
+
+    def distance(self, point):
+        """Measure the distance between the plane and a point."""
+        return abs(np.dot(self.normal, point) - self.d_origo)
+
+# End of class Plane
+
+
+class WallConstraint(object):
+    """A wall constraint"""
+    def __init__(self, z=0):
+        """Initialize wall constraint
+
+        z: Place wall z coordinate here
+        d: Don't let polymer random walk get closer than this
+        """
+        self.plane = Plane((0,0,z), (0, 0, 1))
+
+    def check(self, coords):
+        """Check whether coords are violating constraint
+        
+        coords: 2x3 array with coordinates in row vectors
+        """
+        d0 = np.dot(self.plane.normal, coords[0]) - self.plane.d_origo
+        d1 = np.dot(self.plane.normal, coords[1]) - self.plane.d_origo
+        if np.sign(d0) != np.sign(d1):
+            raise ConstraintError('Polymer hit wall')
+
 
 def fold_coords(coords, box, pbc):
     """Fold coordinates into box or throw exception"""
@@ -89,7 +150,7 @@ def euler_rot(dr, cc):
     dro2 = np.cross(dr, dro1)
     return np.linalg.solve(np.array((dro1, dro2, dr)), cc)
 
-def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
+def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100, constr=[]):
     """Generate a single linear chain using a randow walk
 
     nbeads -- Number of beads in the chain to generate
@@ -129,6 +190,8 @@ def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
             np.sin(theta) * sinphi,
             np.cos(phi)))
         try:
+            for con in constr:
+                con.check(coords[0:2])
             #coords[1] = fold_coords(coords[1], box, pbc)
             # Rest of the chain
             # Use cylindrical coordinates with z axis along n-1 and n-2 beads
@@ -147,6 +210,8 @@ def gen_chain_rw(nbeads, box, pbc, dist, angle, maxtry=100):
                 coords[ii] = cc + coords[ii-1]
                 # Add checking for constraint errors, going out of the
                 # box if not pbc=xyz etc. here.
+                for con in constr:
+                    con.check(coords[(ii-1):(ii+1)])
         except ConstraintError:
             if ntry == maxtry -1:
                 raise ConstraintError("Polymer generation failed, maybe \
@@ -199,7 +264,7 @@ def gen_index(mbeads, bpc, nchains):
                         f.write('%i %i %i\n' % (bn+1, bn+2, bn+3))
 
 
-def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle):
+def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle, constr=[]):
     """Write out coordinate file for BPA-PC system.
 
     The file is in GRO format. See Gromacs manual for description.
@@ -210,7 +275,7 @@ def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle):
             % (nchains, bpc))
     f.write('%i\n' % (bpc * nchains))
     for chain in range(nchains):
-        coords = gen_chain_rw(bpc, box, pbc, dist, angle)
+        coords = gen_chain_rw(bpc, box, pbc, dist, angle, constr=constr)
         for ii, bead in enumerate(coords):
             if ii % 4 == 0 or ii % 4 == 2:
                 btype = 'P'
