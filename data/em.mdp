@@ -1,6 +1,6 @@
 ; RUN CONTROL PARAMETERS
 integrator               = steep
-nsteps                   = 10000
+nsteps                   = 200
 
 emstep = 0.1
 
@@ -36,12 +36,12 @@ lincs_warnangle          = 60
 
 ; OUTPUT CONTROL OPTIONS =
 ; Output frequency for coords (x), velocities (v) and forces (f) =
-nstxout                  = 5000
-nstvout                  = 5000
-nstfout                  = 5000
+nstxout                  = 0
+nstvout                  = 0
+nstfout                  = 0
 ; Output frequency for energies to log file and energy file =
 nstlog                   = 1000
 nstenergy                = 1000
 ; Output frequency and precision for xtc file =
 nstxtcout                = 1000
-xtc_precision            = 100
+xtc_precision            = 1000
