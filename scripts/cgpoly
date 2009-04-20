@@ -21,6 +21,7 @@
 # with, by default 80 chains and 43 beads per chain in a 7x7x7 nm box
 
 import cgpoly
+import os.path
 from optparse import OptionParser
 
 usage = """%prog [options] outfile
@@ -81,7 +82,11 @@ if options.wall:
 else:
     constr = []
 
+# Copy required data files with parameters etc.
+cgpoly.params.copy_data_files()
+
 conf = cgpoly.params.CGConfig(conf_file)
+ddir = cgpoly.params.find_datadir()
 
 # Average bead-bead distance
 dist = conf.avg_r
@@ -89,12 +94,16 @@ dist = conf.avg_r
 # Convert Espresso format tables for bonded angle potentials to
 # Gromacs format
 top = cgpoly.topology.TopologyGenerator(conf.c)
-exp_pcp = top.espresso2gro_convert_table('PCP_TABLE.DAT', 'table_a0.xvg')
-exp_pip = top.espresso2gro_convert_table('PIP_TABLE.DAT', 'table_a1.xvg')
+exp_pcp = top.espresso2gro_convert_table(os.path.join(ddir, 'PCP_TABLE.DAT'),
+                                         'table_a0.xvg')
+exp_pip = top.espresso2gro_convert_table(os.path.join(ddir, 'PIP_TABLE.DAT'),
+                                         'table_a1.xvg')
 
 # Chain topology and bonded interactions
-topfile = 'bpapc' + str(bpc) + '.itp'
-top.genchain_top(bpc, topfile)
+itpfile = 'bpapc' + str(bpc) + '.itp'
+top.genchain_top(bpc, itpfile)
+topfile = 'bpapc' + str(nchains) + '.top'
+top.genbox_top(nchains, bpc, itpfile, topfile)
 
 # Average angle
 # angles in monomer: PCP, IPC, PIP, IPC

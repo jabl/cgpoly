@@ -263,6 +263,16 @@ def gen_index(mbeads, bpc, nchains):
                         bn = bpc*chain + bead 
                         f.write('%i %i %i\n' % (bn+1, bn+2, bn+3))
 
+def gen_index_beads(filename):
+    """Generate index files with beads in different groups."""
+    import os, tempfile
+    cmdfile = tempfile.NamedTemporaryFile()
+    cmdfile.write('a P*\na C*\na I*\nname 2 P\nname 3 C\nname 4 I\nq\n')
+    cmdfile.flush()
+    sysstr = 'make_ndx -f ' + filename + ' < ' + cmdfile.name
+    inf, outf = os.popen4(sysstr)
+    outf.read()
+    cmdfile.close()
 
 def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle, constr=[]):
     """Write out coordinate file for BPA-PC system.
@@ -289,6 +299,8 @@ def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle, constr=[]):
                        bead[0], bead[1], bead[2], 0.0, 0.0, 0.0))
     f.write('%8.4f %8.4f %8.4f\n' % box)
     f.close()
+    # Generate index file with different bead types in different groups
+    gen_index_beads(filename)
     # Finally generate index files for g_angle
     gen_index(['P', 'C', 'P', 'I'], bpc, nchains)
 

@@ -19,6 +19,30 @@
 
 """Module for dealing with configuration parameters"""
 
+import os
+
+def find_datadir():
+    """Try to find the data files."""
+    # Check current directory
+    if os.path.exists('cgparams.py'):
+        return '.'
+    # 1st try didn't succeed. Check if we find the installed data dir
+    p = __file__
+    while 1:
+        p = os.path.dirname(p)
+        d = os.path.join(p, 'share/cgpoly')
+        if os.path.exists(d):
+            return d
+        if p == '/':
+            return None
+
+def copy_data_files():
+    """Copy needed data files to current directory."""
+    d = find_datadir()
+    if d == '.' or d == None:
+        return
+    os.system('cp ' + d + '/* .')
+
 
 class CGConfig(object):
     """Base class for objects with config params"""
@@ -35,7 +59,7 @@ class CGConfig(object):
             execfile(conf, {}, self.c)
         elif not conf:
             self.c = {}
-            execfile('cgparams.py', {}, self.c)
+            execfile(os.path.join(find_datadir(), 'cgparams.py'), {}, self.c)
         else:
             self.c = conf
 
@@ -78,3 +102,8 @@ class CGConfig(object):
     def _get_ipc_k(self):
         return self.c['ipc_k']
     ipc_k = property(_get_ipc_k, doc='I-P-C spring constant')
+
+
+
+            
+        
