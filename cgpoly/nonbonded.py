@@ -49,7 +49,8 @@ class NonBonded(cp.CGConfig):
         # Round up to nearest 0.1 nm, add another 0.1 for safety.
         return np.ceil(max(cuts) * 10) / 10. + self.table_extension + 0.1
 
-    def nb_tables(self, sigma1, sigma2=None, forcecap=None, dr=0.002):
+    def nb_tables(self, sigma1, sigma2=None, forcecap=None, dr=0.002,
+                  wall=False, eps=None):
 
         """Create tables with pot and force
 
@@ -62,23 +63,30 @@ class NonBonded(cp.CGConfig):
         cutoff = sigma * 2**(1./6) (should be sigma**(1./6) for WCA?)
         shift = 1./4
         offset = 0
+
+        if wall=True, then generates bead-wall 10-4 LJ tables instead.
         
         """
         if sigma2 == None:
             sigma2 = sigma1
         sig = (sigma1 + sigma2) / 2
-        eps = self.kbt
         cutoff = cutoff_sigma(sig)
         mc = self.maxcut()
         rr = np.linspace(0, mc, mc/dr)
         pot = np.empty(rr.shape)
         force = pot.copy()
-        pot[1:], force[1:] = ljpot.lj(rr[1:], eps, sig, 1./4, cutoff, forcecap)
+        if wall:
+            #pot[1:], force[1:] = ljpot.ljwall(rr[1:], eps, sig, 3./5, cutoff, forcecap)
+            pot[1:], force[1:] = ljpot.ljwall(rr[1:], eps, sig, 0., cutoff, forcecap)
+        else:
+            if eps == None:
+                eps = self.kbt
+            pot[1:], force[1:] = ljpot.lj(rr[1:], eps, sig, 1./4, cutoff, forcecap)
         pot[0] = pot[1]
         force[0] = force[1]
         return rr, pot, force
 
-    def gen_nb_files(self, forcecap=None):
+    def gen_nb_files(self, forcecap=None, wall=False):
         """Generate Gromacs nb tables
         
         The actual data will be as g and g', that is columns 4 and 5. In
@@ -92,6 +100,18 @@ class NonBonded(cp.CGConfig):
             for jj, b2 in enumerate(beads[ii:]):
                 rr, pot, force = self.nb_tables(sigmas[ii], sigmas[jj], forcecap)
                 fn = 'table_' + b1 + '_' + b2 + '.xvg'
+                fout = open(fn, 'w')
+                for kk, dist in enumerate(rr):
+                    fout.write('%5.4f 0 0 %5g %5g 0 0\n'
+                               % (dist, pot[kk], force[kk]))
+                fout.close()
+        # If wall potentials are also desired, generate them
+        if wall:
+            for ii, bb in enumerate(beads):
+                rr, pot, force = self.nb_tables(self.sigmas_wall[ii],
+                                                forcecap=forcecap, wall=wall,
+                                                eps=self.eps_wall[ii])
+                fn = 'table_' + bb + '_W.xvg'
                 fout = open(fn, 'w')
                 for kk, dist in enumerate(rr):
                     fout.write('%5.4f 0 0 %5g %5g 0 0\n'

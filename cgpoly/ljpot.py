@@ -31,7 +31,7 @@ def ljwall_scalar(r, epsilon, sigma, cutoff, shift, offset):
     else:
         return 0.
 
-def ljwall(r, epsilon=1., sigma=1., cutoff=1., shift=3./5, offset=0.):
+def ljwallold(r, epsilon=1., sigma=1., cutoff=1., shift=3./5, offset=0.):
     """10-4 LJ potential."""
 
     if isinstance(r, np.ndarray):
@@ -41,6 +41,28 @@ def ljwall(r, epsilon=1., sigma=1., cutoff=1., shift=3./5, offset=0.):
         return pot
     else:
         return ljwall_scalar(r, epsilon, sigma, cutoff, shift, offset)
+
+def ljwall(r, epsilon=1., sigma=1., shift=3./5, cutoff=None, forcecap=None):
+    """10-4 LJ potential for walls"""
+    sf4 = (sigma / r)**4
+    sf10 = (sigma / r)**10
+    pot = 2 * np.pi * epsilon * ( (2. / 5) * sf10 - sf4 + shift)
+    force = 2 * np.pi * epsilon * ( (2.*10 / 5) * sf10 - 4 * sf4) / r
+    if cutoff != None and isinstance(pot, np.ndarray):
+        pot = np.where(r <= cutoff, pot, 0.)
+        force = np.where(r <= cutoff, force, 0.)
+    if forcecap != None:
+        # Force capped potential according to Auhl et al
+        # JCP 119, 12718 (2003)
+        # First find the cutoff radius for force capping
+        ind = (force > forcecap).sum() - 1
+        rcut = r[ind]
+        potcut, fcut = lj(rcut, epsilon, sigma, shift, cutoff)
+        # Extra - on the first term since lj() return -force
+        pot = np.where(force <= forcecap, pot, (rcut - r) * fcut + potcut)
+        force = np.where(force <= forcecap, force, forcecap)
+    return pot, force
+
 
 def lj(r, epsilon=1., sigma=1., shift=0, cutoff=None, forcecap=None):
     """Standard 12-6 LJ potential"""

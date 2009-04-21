@@ -50,7 +50,7 @@ tau_t = 1/0.5 * time_scaling
 
 
 # Harmonic bonds, k and b, see section 4.2.1 in gromacs manual
-# Harminic spring constant is taken from gaussian distr
+# Harmonic spring constant is taken from gaussian distr
 # 1/(stddev/sigma)**2
 cp_k = (sigma / 0.04) ** 2
 cp_r = 0.356 / sigma
@@ -70,6 +70,16 @@ ipc_k = 0.1 * kb * temp * (180. / math.pi)**2
 c_sigma = 0.349 / sigma
 p_sigma = 0.467 / sigma
 i_sigma = 0.519 / sigma
+
+
+# Wall interaction 10-4 LJ parameters
+ev2kjmol = 96.48538 # 1 eV = 96.48538 kJ/mol
+cw_eps = 1.89 * ev2kjmol
+pw_eps = 0.66 * ev2kjmol
+iw_eps = 0.
+cw_sigma = 2.97948739942 / 10 / sigma
+pw_sigma = 3.42799564404 / 10 / sigma
+iw_sigma = 4. / 10 / sigma # Purely repulsive
 
 # Some technical stuff
 

@@ -67,6 +67,14 @@ class CGConfig(object):
         return (self.c['p_sigma'], self.c['c_sigma'], self.c['i_sigma'])
     sigmas = property(_get_sigmas, None, None, 'Sigmas of the beads')
 
+    def _get_sigmas_wall(self):
+        return (self.c['pw_sigma'], self.c['cw_sigma'], self.c['iw_sigma'])
+    sigmas_wall = property(_get_sigmas_wall, None, None, 'Wall sigmas')
+
+    def _get_eps_wall(self):
+        return (self.c['pw_eps'], self.c['cw_eps'], self.c['iw_eps'])
+    eps_wall = property(_get_eps_wall, None, None, 'Wall epsilons')
+
     def _get_kbt(self):
         return self.c['kb'] * self.c['temp']
     kbt = property(_get_kbt, None, None, 'kb * temp')

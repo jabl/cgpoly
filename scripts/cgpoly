@@ -79,8 +79,10 @@ else:
 if options.wall:
     constr = [cgpoly.polymer.WallConstraint(0),
               cgpoly.polymer.WallConstraint(box[2])]
+    wall = True
 else:
     constr = []
+    wall = False
 
 # Copy required data files with parameters etc.
 cgpoly.params.copy_data_files()
@@ -124,6 +126,6 @@ cgpoly.polymer.gen_bpapc(args[0], bpc, nchains, box, (True, True, True),
 
 # Table files with non-bonded interactions (WCA potentials)
 nb = cgpoly.nonbonded.NonBonded(conf.c)
-nb.gen_nb_files(fcap)
+nb.gen_nb_files(fcap, wall)
 
 
