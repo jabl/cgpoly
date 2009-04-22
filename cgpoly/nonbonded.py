@@ -77,7 +77,7 @@ class NonBonded(cp.CGConfig):
         if sigma2 == None:
             sigma2 = sigma1
         sig = (sigma1 + sigma2) / 2
-        if wall:
+        if wall and eps != None:
             cutoff = self.cutoff_wall(sig)
         else:
             cutoff = cutoff_sigma(sig)
@@ -85,7 +85,7 @@ class NonBonded(cp.CGConfig):
         rr = np.linspace(0, mc, mc/dr)
         pot = np.empty(rr.shape)
         force = pot.copy()
-        if wall:
+        if wall and eps != None:
             #pot[1:], force[1:] = ljpot.ljwall(rr[1:], eps, sig, 3./5, cutoff, forcecap)
             pot[1:], force[1:] = ljpot.ljwall(rr[1:], eps, sig, 0., cutoff, forcecap)
         else:

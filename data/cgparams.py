@@ -76,7 +76,7 @@ i_sigma = 0.519 / sigma
 ev2kjmol = 96.48538 # 1 eV = 96.48538 kJ/mol
 cw_eps = 1.89 * ev2kjmol
 pw_eps = 0.66 * ev2kjmol
-iw_eps = 0.
+iw_eps = None # Purely repulsive WCA potential like for polymer bead-bead
 cw_sigma = 2.97948739942 / 10 / sigma
 pw_sigma = 3.42799564404 / 10 / sigma
 iw_sigma = 4. / 10 / sigma # Purely repulsive
