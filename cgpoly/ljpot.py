@@ -43,11 +43,23 @@ def ljwallold(r, epsilon=1., sigma=1., cutoff=1., shift=3./5, offset=0.):
         return ljwall_scalar(r, epsilon, sigma, cutoff, shift, offset)
 
 def ljwall(r, epsilon=1., sigma=1., shift=3./5, cutoff=None, forcecap=None):
-    """10-4 LJ potential for walls"""
+    """10-4 LJ potential for walls
+
+    Since in this case parameters are taken from DFT calculations with
+    surface interaction, the 2*pi prefactor is already included in the
+    epsilon.
+
+    However, the max potential, which is at r=sigma, is not -epsilon
+    as in regular 12-6 LJ potential, but rather (-3/5)*epsilon. Hence
+    we must take this into account.
+
+    """
     sf4 = (sigma / r)**4
     sf10 = (sigma / r)**10
-    pot = 2 * np.pi * epsilon * ( (2. / 5) * sf10 - sf4 + shift)
-    force = 2 * np.pi * epsilon * ( (2.*10 / 5) * sf10 - 4 * sf4) / r
+    #pot = 2 * np.pi * epsilon * ( (2. / 5) * sf10 - sf4 + shift)
+    #force = 2 * np.pi * epsilon * ( (2.*10 / 5) * sf10 - 4 * sf4) / r
+    pot = (5. / 3) * epsilon * ( (2. / 5) * sf10 - sf4 + shift)
+    force = (5. / 3) * epsilon * ( (2.*10 / 5) * sf10 - 4 * sf4) / r
     if cutoff != None and isinstance(pot, np.ndarray):
         pot = np.where(r <= cutoff, pot, 0.)
         force = np.where(r <= cutoff, force, 0.)
@@ -86,13 +98,16 @@ def lj(r, epsilon=1., sigma=1., shift=0, cutoff=None, forcecap=None):
 
 if __name__ == '__main__':
     from pylab import *
-    ll = linspace(0.5, 4.0, 1000)
+    import cgpoly.params
+    import os.path
+    ll = linspace(0.2, 4.0, 1000)
     #plot(ll, ljwall(ll), label='LJ Wall default')
     #plot(ll, ljwall(ll, shift=0.), label='ljwall shift=0')
     plot(ll, lj(ll)[0], label='12-6 LJ sigma=1, epsilon=1')
     plot(ll, lj(ll)[1], label='12-6 LJ force sigma=1, epsilon=1')
     # C-C repulsion, reduced
-    # rsigma = 1 # Normal units
+    execfile(os.path.join(cgpoly.params.find_datadir(), 'cgparams.py'))
+    rsigma = 1 # Normal units
     plot(ll, lj(ll, 1, c_sigma/rsigma, 0.25, 2**(1./6)*c_sigma/rsigma)[0], label='12-6 WCA C')
     plot(ll, lj(ll, 1, c_sigma/rsigma, 0.25, 2**(1./6)*c_sigma/rsigma)[1], label='12-6 force WCA C')
     # P-P repulsion, reduced

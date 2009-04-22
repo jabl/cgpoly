@@ -35,17 +35,24 @@ def cutoff_sigma(sig):
     "WCA cutoff from sigma"
     return sig * 2**(1./6)
 
-
 class NonBonded(cp.CGConfig):
     """Functionality for creating tables for nonbonded interactions"""
 
-    def __init__(self, conf):
+    def __init__(self, conf=None, wall=False):
         """Initialize nonbonded table creator"""
         super(NonBonded, self).__init__(conf)
-        
+        self.wall = wall
+
+    def cutoff_wall(self, sig):
+        """Cutoff for wall 10-4 LJ pot"""
+        return sig * self.c['cutoff_wall']
+    
     def maxcut(self):
         "Max cutoff needed for tables"
         cuts = [cutoff_sigma(x) for x in self.sigmas]
+        if self.wall:
+            for x in self.sigmas_wall:
+                cuts.append(self.cutoff_wall(x))
         # Round up to nearest 0.1 nm, add another 0.1 for safety.
         return np.ceil(max(cuts) * 10) / 10. + self.table_extension + 0.1
 
@@ -70,7 +77,10 @@ class NonBonded(cp.CGConfig):
         if sigma2 == None:
             sigma2 = sigma1
         sig = (sigma1 + sigma2) / 2
-        cutoff = cutoff_sigma(sig)
+        if wall:
+            cutoff = self.cutoff_wall(sig)
+        else:
+            cutoff = cutoff_sigma(sig)
         mc = self.maxcut()
         rr = np.linspace(0, mc, mc/dr)
         pot = np.empty(rr.shape)
@@ -86,7 +96,7 @@ class NonBonded(cp.CGConfig):
         force[0] = force[1]
         return rr, pot, force
 
-    def gen_nb_files(self, forcecap=None, wall=False):
+    def gen_nb_files(self, forcecap=None):
         """Generate Gromacs nb tables
         
         The actual data will be as g and g', that is columns 4 and 5. In
@@ -106,10 +116,10 @@ class NonBonded(cp.CGConfig):
                                % (dist, pot[kk], force[kk]))
                 fout.close()
         # If wall potentials are also desired, generate them
-        if wall:
+        if self.wall:
             for ii, bb in enumerate(beads):
                 rr, pot, force = self.nb_tables(self.sigmas_wall[ii],
-                                                forcecap=forcecap, wall=wall,
+                                                forcecap=forcecap, wall=True,
                                                 eps=self.eps_wall[ii])
                 fn = 'table_' + bb + '_W.xvg'
                 fout = open(fn, 'w')
@@ -134,4 +144,5 @@ if __name__ == '__main__':
         fcap = float(options.fcap)
     else:
         fcap = None
-    gen_nb_files(fcap)
+    nb = NonBonded()
+    nb.gen_nb_files(fcap)

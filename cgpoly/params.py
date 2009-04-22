@@ -47,7 +47,7 @@ def copy_data_files():
 class CGConfig(object):
     """Base class for objects with config params"""
     
-    def __init__(self, conf):
+    def __init__(self, conf=None):
         """Initialize by getting params from file or dict
 
         Arguments:

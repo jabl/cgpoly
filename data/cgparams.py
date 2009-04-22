@@ -80,6 +80,7 @@ iw_eps = 0.
 cw_sigma = 2.97948739942 / 10 / sigma
 pw_sigma = 3.42799564404 / 10 / sigma
 iw_sigma = 4. / 10 / sigma # Purely repulsive
+cutoff_wall = 3 # Multiply sigma with this to get the cutoff range
 
 # Some technical stuff
 
