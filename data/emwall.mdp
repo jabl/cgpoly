@@ -1,0 +1,53 @@
+; RUN CONTROL PARAMETERS
+integrator               = steep
+nsteps                   = 200
+
+emstep = 0.1
+
+; Selection of energy groups
+energygrps               = P C I
+
+; NEIGHBORSEARCHING PARAMETERS
+; nblist cut-off        
+rlist                    = 0.6
+
+; OPTIONS FOR ELECTROSTATICS AND VDW
+; Method for doing electrostatics
+rcoulomb_switch          = 0
+rcoulomb                 = 0.6
+; Relative dielectric constant for the medium and the reaction field
+epsilon_r                = 0
+epsilon_rf               = 0
+; Method for doing Van der Waals
+vdw_type                 = user
+; cut-off lengths       
+rvdw_switch              = 0
+rvdw                     = 0.6
+; Apply long range dispersion corrections for Energy and Pressure
+dispcorr                 = no
+; Extension of the potential lookup tables beyond the cut-off
+table-extension          = 1
+; Seperate tables between energy group pairs
+energygrp_table          = P P P C P I C C C I I I 
+
+; OPTIONS FOR BONDS
+constraints              = all-bonds
+lincs_warnangle          = 60
+
+; OUTPUT CONTROL OPTIONS =
+; Output frequency for coords (x), velocities (v) and forces (f) =
+nstxout                  = 0
+nstvout                  = 0
+nstfout                  = 0
+; Output frequency for energies to log file and energy file =
+nstlog                   = 1000
+nstenergy                = 1000
+; Output frequency and precision for xtc file =
+nstxtcout                = 1000
+xtc_precision            = 1000
+
+
+; Wall
+pbc = xy
+nwall = 2
+wall_type = table
