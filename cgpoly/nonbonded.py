@@ -121,12 +121,17 @@ class NonBonded(cp.CGConfig):
                 rr, pot, force = self.nb_tables(self.sigmas_wall[ii],
                                                 forcecap=forcecap, wall=True,
                                                 eps=self.eps_wall[ii])
-                fn = 'table_' + bb + '_W.xvg'
-                fout = open(fn, 'w')
+                fnb = 'table_' + bb
+                fn0 = fnb + '_wall0.xvg'
+                fout = open(fn0, 'w')
                 for kk, dist in enumerate(rr):
                     fout.write('%5.4f 0 0 %5g %5g 0 0\n'
                                % (dist, pot[kk], force[kk]))
                 fout.close()
+                fn1 = fnb + '_wall1.xvg'
+                if os.path.exists(fn1):
+                    os.remove(fn1)
+                os.symlink(fn0, fn1)
         # Even though pairwise tables are used for all NB interactions, gromacs
         # complains if it can't find the generic table.xvg used for all others.
         # So just create a dummy.
