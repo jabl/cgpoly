@@ -63,8 +63,11 @@ if options.nchains:
 else:
     nchains = 80
 if options.size:
-    s = float(options.size)
-    box = (s, s, s)
+    try:
+        s = float(options.size)
+        box = (s, s, s)
+    except ValueError:
+        box = [float(x) for x in options.size.split()]
 else:
     box = (7, 7, 7)
 if options.fcap:

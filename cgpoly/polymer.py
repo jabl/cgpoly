@@ -297,7 +297,7 @@ def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle, constr=[]):
             f.write("%5d%5s%5s%5d%8.3f%8.3f%8.3f%8.4f%8.4f%8.4f\n"
                     % (chain + 1, 'BPAPC', btype, chain*bpc + ii + 1,
                        bead[0], bead[1], bead[2], 0.0, 0.0, 0.0))
-    f.write('%8.4f %8.4f %8.4f\n' % box)
+    f.write('%8.4f %8.4f %8.4f\n' % tuple(box))
     f.close()
     # Generate index file with different bead types in different groups
     gen_index_beads(filename)
