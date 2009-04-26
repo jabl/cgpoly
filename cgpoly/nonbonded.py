@@ -51,8 +51,11 @@ class NonBonded(cp.CGConfig):
         "Max cutoff needed for tables"
         cuts = [cutoff_sigma(x) for x in self.sigmas]
         if self.wall:
-            for x in self.sigmas_wall:
-                cuts.append(self.cutoff_wall(x))
+            for ii, x in enumerate(self.sigmas_wall):
+                if self.eps_wall[ii] != None:
+                    cuts.append(self.cutoff_wall(x))
+                else:
+                    cuts.append(cutoff_sigma(x))
         # Round up to nearest 0.1 nm, add another 0.1 for safety.
         return np.ceil(max(cuts) * 10) / 10. + self.table_extension + 0.1
 
@@ -87,7 +90,7 @@ class NonBonded(cp.CGConfig):
         force = pot.copy()
         if wall and eps != None:
             #pot[1:], force[1:] = ljpot.ljwall(rr[1:], eps, sig, 3./5, cutoff, forcecap)
-            pot[1:], force[1:] = ljpot.ljwall(rr[1:], eps, sig, 0., cutoff, forcecap)
+            pot[1:], force[1:] = ljpot.ljwall(rr[1:], eps, sig, 0., None, forcecap)
         else:
             if eps == None:
                 eps = self.kbt

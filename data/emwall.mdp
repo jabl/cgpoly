@@ -9,12 +9,12 @@ energygrps               = P C I
 
 ; NEIGHBORSEARCHING PARAMETERS
 ; nblist cut-off        
-rlist                    = 0.6
+rlist                    = 1.1
 
 ; OPTIONS FOR ELECTROSTATICS AND VDW
 ; Method for doing electrostatics
 rcoulomb_switch          = 0
-rcoulomb                 = 0.6
+rcoulomb                 = 1.1
 ; Relative dielectric constant for the medium and the reaction field
 epsilon_r                = 0
 epsilon_rf               = 0
@@ -22,7 +22,7 @@ epsilon_rf               = 0
 vdw_type                 = user
 ; cut-off lengths       
 rvdw_switch              = 0
-rvdw                     = 0.6
+rvdw                     = 1.1
 ; Apply long range dispersion corrections for Energy and Pressure
 dispcorr                 = no
 ; Extension of the potential lookup tables beyond the cut-off
