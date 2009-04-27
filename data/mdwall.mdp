@@ -42,7 +42,8 @@ dispcorr                 = no
 ; Extension of the potential lookup tables beyond the cut-off
 table-extension          = 1
 ; Seperate tables between energy group pairs
-energygrp_table          = P P P C P I C C C I I I P wall0 P wall1 C wall0 C wall1 I wall0 I wall1
+;energygrp_table          = P P P C P I C C C I I I P wall0 P wall1 C wall0 C wall1 I wall0 I wall1
+energygrp_table          = P P P C P I C C C I I I
 
 
 ; OPTIONS FOR WEAK COUPLING ALGORITHMS
@@ -93,4 +94,4 @@ xtc_precision            = 1000
 pbc = xy
 nwall = 2
 wall_type = table
-wall_atomtype = wall0 wall1
+wall_atomtype = P P
