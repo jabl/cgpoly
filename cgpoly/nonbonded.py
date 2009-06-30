@@ -111,7 +111,8 @@ class NonBonded(cp.CGConfig):
         sigmas = self.sigmas
         for ii, b1 in enumerate(beads):
             for jj, b2 in enumerate(beads[ii:]):
-                rr, pot, force = self.nb_tables(sigmas[ii], sigmas[jj], forcecap)
+                rr, pot, force = self.nb_tables(sigmas[ii], sigmas[jj + ii],
+                                                forcecap)
                 fn = 'table_' + b1 + '_' + b2 + '.xvg'
                 fout = open(fn, 'w')
                 for kk, dist in enumerate(rr):
