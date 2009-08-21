@@ -107,3 +107,6 @@ pull_k1 = 100
 
 ; Don't output force, since it is constant
 pull_nstfout = 0
+
+; For pulling, needs to disable COM removal
+comm_mode = None
