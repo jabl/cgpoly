@@ -110,6 +110,13 @@ top.genchain_top(bpc, itpfile)
 topfile = 'bpapc' + str(nchains) + '.top'
 top.genbox_top(nchains, bpc, itpfile, topfile)
 
+# PSF topology file (for VMD)
+if args[0].endswith('.gro'):
+    psffile = args[0][:-4] + '.psf'
+else:
+    psffile = args[0] + '.psf'
+top.gen_psf(nchains, bpc, psffile)
+
 # Average angle
 # angles in monomer: PCP, IPC, PIP, IPC
 if options.angle:

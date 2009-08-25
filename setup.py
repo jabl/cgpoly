@@ -3,7 +3,7 @@
 from distutils.core import setup
 from glob import glob
 
-version = '0.2'
+version = '0.3'
 
 # Scripts whose names end in a-z or 1-9 (avoids emacs backup files)
 scripts = glob('scripts/*[a-z,0-9]')
