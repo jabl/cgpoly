@@ -241,10 +241,10 @@ def gen_index(mbeads, bpc, nchains):
     # crystallography weenies happy)
     ra = []
     for ii, ang in enumerate(angles):
-        as = ang[0]
+        ang0 = ang[0]
         angs = [a[0] for a in angles[(ii+1):]]
         for jj, ang2 in enumerate(angs):
-            if as[::-1] == ang2:
+            if ang0[::-1] == ang2:
                 ra.append((ang, jj + ii))
     for a in ra:
         angles[a[1] + 1].append(a[1]-1)
