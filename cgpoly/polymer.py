@@ -1,7 +1,7 @@
 #!/usr/bin/python
-# -*- coding: latin-1 -*-
+# -*- coding: utf-8 -*-
 
-# Copyright (C) 2009 Janne Blomqvist
+# Copyright (C) 2009, 2010 Janne Blomqvist
 
 #  This file is part of cgpoly.
 

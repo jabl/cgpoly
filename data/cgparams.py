@@ -1,4 +1,4 @@
-# -*- coding: latin-1 -*-
+# -*- coding: utf-8 -*-
 
 # Copyright (C) 2009 Janne Blomqvist
 
@@ -25,7 +25,7 @@ Abrams, Macromolecules 36, 260-267 (2003)"""
 
 import math
 
-# Remember, Espresso uses Å, Gromacs uses nm!
+# Remember, Espresso uses Ã…, Gromacs uses nm!
 # Of course, scaled by sigma
 
 # In Gromacs, Boltzmann constant is
