@@ -74,12 +74,14 @@ i_sigma = 0.519 / sigma
 
 # Wall interaction 10-4 LJ parameters
 ev2kjmol = 96.48538 # 1 eV = 96.48538 kJ/mol
-cw_eps = 1.89 * ev2kjmol
-pw_eps = 0.66 * ev2kjmol
-iw_eps = None # Purely repulsive WCA potential like for polymer bead-bead
-cw_sigma = 2.97948739942 / 10 / sigma
-pw_sigma = 3.42799564404 / 10 / sigma
-iw_sigma = 4. / 10 / sigma # Purely repulsive
+
+cw_eps = 0.61 * ev2kjmol
+pw_eps = 0.23 * ev2kjmol
+iw_eps = 0.30 * ev2kjmol 
+cw_sigma = 3.48102590724 / 10 / sigma
+pw_sigma = 3.79446193575 / 10 / sigma
+iw_sigma = 3.30945459673 / 10 / sigma
+
 cutoff_wall = 3 # Multiply sigma with this to get the cutoff range
 
 # Some technical stuff
