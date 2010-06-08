@@ -300,7 +300,7 @@ echo 1|g_trjconv -box  15.9365 15.9365 31.873 -n index.ndx -s topol.tpr -f pc-re
 
 Need to put correct box size, since espresso doesn't put box size into
 .pdb file. Also, length units will be messed up, both due to LJ units
-and Espresso using � rather than nm.
+and Espresso using Å rather than nm.
 
 Concatenate a bunch of trajectories with
 
