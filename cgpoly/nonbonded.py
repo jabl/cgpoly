@@ -85,7 +85,7 @@ class NonBonded(cp.CGConfig):
         else:
             cutoff = cutoff_sigma(sig)
         mc = self.maxcut()
-        rr = np.linspace(0, mc, mc/dr)
+        rr = np.arange(0, mc + dr, dr)
         pot = np.empty(rr.shape)
         force = pot.copy()
         if wall and eps != None:
