@@ -264,15 +264,15 @@ def gen_index(mbeads, bpc, nchains):
                         f.write('%i %i %i\n' % (bn+1, bn+2, bn+3))
 
 def gen_index_beads(filename):
-    """Generate index files with beads in different groups."""
-    import os, tempfile
-    cmdfile = tempfile.NamedTemporaryFile()
-    cmdfile.write('a P*\na C*\na I*\nname 2 P\nname 3 C\nname 4 I\nq\n')
-    cmdfile.flush()
-    sysstr = 'make_ndx -f ' + filename + ' < ' + cmdfile.name
-    inf, outf = os.popen4(sysstr)
-    outf.read()
-    cmdfile.close()
+    """Generate index files with beads in different groups.
+
+    This is for gromacs 4.5, for 4.0 the group numbers are 2-4
+    instead of 3-5.
+    """
+    from subprocess import Popen, PIPE
+    p = Popen('make_ndx -f ' + filename, shell=True, 
+              stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
+    (outdata, errdata) = p.communicate('a P*\na C*\na I*\nname 3 P\nname 4 C\nname 5 I\nq\n')
 
 def gen_bpapc(filename, bpc, nchains, box, pbc, dist, angle, constr=[]):
     """Write out coordinate file for BPA-PC system.
