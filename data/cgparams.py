@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2009 Janne Blomqvist
+# Copyright (C) 2009, 2011 Janne Blomqvist
 
 #  This file is part of cgpoly.
 
@@ -21,7 +21,13 @@
 """Parameters of the coarse-grained BPA-PC model
 
 See
-Abrams, Macromolecules 36, 260-267 (2003)"""
+Abrams, Macromolecules 36, 260-267 (2003)
+
+
+Wall interaction parameters from 
+
+Blomqvist and Salo, Physical Review B 84, 153410 (2011)
+"""
 
 import math
 
@@ -75,12 +81,12 @@ i_sigma = 0.519 / sigma
 # Wall interaction 10-4 LJ parameters
 ev2kjmol = 96.48538 # 1 eV = 96.48538 kJ/mol
 
-cw_eps = 0.61 * ev2kjmol
-pw_eps = 0.23 * ev2kjmol
-iw_eps = 0.30 * ev2kjmol 
-cw_sigma = 3.48102590724 / 10 / sigma
-pw_sigma = 3.79446193575 / 10 / sigma
-iw_sigma = 3.30945459673 / 10 / sigma
+cw_eps = 0.57 * ev2kjmol
+pw_eps = 0.50 * ev2kjmol
+iw_eps = 0.50 * ev2kjmol 
+cw_sigma = 3.12 / 10 / sigma
+pw_sigma = 3.02 / 10 / sigma
+iw_sigma = 3.43 / 10 / sigma
 
 cutoff_wall = 3 # Multiply sigma with this to get the cutoff range
 
