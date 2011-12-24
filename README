@@ -110,7 +110,7 @@ mdrun -v -c minimized.gro
 
 Do a MD run with very soft force capping
 
-cgpoly -f 1e3
+cgpoly -f 1e3 tmp.gro
 
 grompp -f md.mdp -p bpapc80.top -n index.ndx -c minimized.gro
 
@@ -128,12 +128,61 @@ Simple benchmark
 Simple system benchmark, run the above example and check the
 performance at the end of the output.
 
+Benchmarks with Gromacs 4.5.5, single precision version:
+
 Intel(R) Core(TM) i5-2500K CPU @ 3.30GHz, 4 threads: 
 
                NODE (s)   Real (s)      (%)
        Time:     59.121     59.121    100.0
                (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
 Performance:     14.124      3.431    146.143      0.164
+
+
+Intel(R) Xeon(R) CPU           X3450  @ 2.67GHz, 8 threads:
+
+               NODE (s)   Real (s)      (%)
+       Time:     84.406     84.406    100.0
+                       1:24
+               (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
+Performance:      9.917      2.558    102.364      0.234
+
+
+Intel(R) Xeon(R) CPU           X3450  @ 2.67GHz, 4 threads:
+
+        Parallel run - timing based on wallclock.
+
+               NODE (s)   Real (s)      (%)
+       Time:     97.618     97.618    100.0
+                       1:37
+               (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
+Performance:      8.566      2.084     88.509      0.271
+
+
+Six-Core AMD Opteron(tm) Processor 2435, 2.6 GHz, 12 threads:
+
+               NODE (s)   Real (s)      (%)
+       Time:     50.482     50.482    100.0
+               (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
+Performance:     16.632      4.364    171.153      0.140
+Segmentation fault (core dumped)
+
+
+Six-Core AMD Opteron(tm) Processor 2435, 2.6 GHz, 6 threads:
+
+               NODE (s)   Real (s)      (%)
+       Time:     80.760     80.760    100.0
+                       1:20
+               (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
+Performance:     10.373      2.591    106.985      0.224
+
+
+Six-Core AMD Opteron(tm) Processor 2435, 2.6 GHz, 4 threads:
+
+               NODE (s)   Real (s)      (%)
+       Time:    113.008    113.008    100.0
+                       1:53
+               (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
+Performance:      7.424      1.786     76.456      0.314
 
 
 Using the Velocity Rescale thermostat
