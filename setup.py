@@ -7,7 +7,7 @@ version = '0.4'
 
 # Scripts whose names end in a-z or 1-9 (avoids emacs backup files)
 scripts = glob('scripts/*[a-z,0-9]')
-data = glob('data/*[a-z,0-9]')
+data = glob('data/*[a-z,A-Z,0-9]')
 #datadir = 'share/cgpoly-' + version
 datadir = 'share/cgpoly'
 
