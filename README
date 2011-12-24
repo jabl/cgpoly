@@ -122,6 +122,20 @@ md.mdp.
 Gradually increase the force capping until you can completely remove
 it.
 
+Simple benchmark
+================
+
+Simple system benchmark, run the above example and check the
+performance at the end of the output.
+
+Intel(R) Core(TM) i5-2500K CPU @ 3.30GHz, 4 threads: 
+
+               NODE (s)   Real (s)      (%)
+       Time:     59.121     59.121    100.0
+               (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
+Performance:     14.124      3.431    146.143      0.164
+
+
 Using the Velocity Rescale thermostat
 =====================================
 
