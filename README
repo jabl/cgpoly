@@ -350,7 +350,7 @@ http://tfy.tkk.fi/~job/cgpoly/polystat.diff
 
 This adds a new "-i" option to g_polystat which calculates internal
 distances and plots them. This functionality has been included in
-Gromacs 4.1 (not yet released at the time of writing this).
+Gromacs 4.5.
 
 
 Using gromacs to analyse Espresso data
