@@ -49,6 +49,7 @@ _rsigma = 4.41
 #sigma = 1.
 
 # In the reduced unit BPA-PC system, the energy scale epsilon is kb*T.
+# Average molar mass of the beads is 73 g/mol.
 # Factor of 10 is due to rsigma being in units of Å=> 1e-10, and then
 # a factor of 1e12 due to GROMACS time unit being ps, and finally a
 # factor of 1e-3 due to unit conversion in the sqrt expression.
