@@ -110,7 +110,7 @@ mdrun -v -c minimized.gro
 
 Do a MD run with very soft force capping
 
-cgpoly -f 1e3 tmp.gro
+cgpoly -f 1e3 
 
 grompp -f md.mdp -p bpapc80.top -n index.ndx -c minimized.gro
 
