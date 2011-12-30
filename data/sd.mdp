@@ -3,10 +3,10 @@ integrator               = sd1
 ; Start time and timestep in ps
 tinit                    = 0.0
 ; The Abrams and Hess papers report a coarse-grained timestep of
-; 0.01 tau in reduced units. Time scaling 1 tau = 3.77 ps calculated
+; 0.01 tau in reduced units. Time scaling 1 tau = 1.73 ps calculated
 ; according to table 2.4 in Gromacs manual. Note this is not the "real"
 ; time scaling calculated by comparing diffusion coefficients
-; However, in Espresso we had to use dt = 0.001 tau, round up => 0.0038 ps
+; However, in Espresso we had to use dt = 0.001 tau.
 ; For equilibrating, need about 0.002 in order to avoid crashing?
 ; With velocity rescale thermostat and bonds converted to constraints, need
 ; dt=0.001.
@@ -41,9 +41,9 @@ energygrp_table          = P P P C P I C C C I I I
 ; Groups to couple separately
 tc-grps                  = system
 ; Time constant (ps) and reference temperature (K)
-; tau_t should be 7.54 ps in order that gamma = 0.5 in reduced units
+; tau_t should be 3.46 ps in order that gamma = 0.5 in reduced units
 ; when using Langevin thermostat
-tau_t                    = 7.5358113033700622
+tau_t                    = 3.461579078552488
 ref_t                    = 570
 ; Pressure coupling     
 Pcoupl                   = no
